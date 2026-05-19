@@ -1070,8 +1070,7 @@ function HomePage({ darkMode, setActivePage }) {
             }}
           >
             Saya membangun antarmuka web yang indah, cepat, dan mudah digunakan.
-            Spesialis React.js & TailwindCSS berbasis di Bandar Lampung,
-            Indonesia.
+            Dengan menggunakan design by custom dan bebas request.
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
