@@ -501,7 +501,7 @@ function ContactCTA({ darkMode, setActivePage }) {
       </div>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
         <a
-          href="https://wa.me/6281234567890"
+          href="https://wa.me/6285368750970"
           target="_blank"
           rel="noreferrer"
           onMouseDown={pressDown}
