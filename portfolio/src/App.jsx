@@ -1,4 +1,31 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+
+// ===== RESPONSIVE HOOK =====
+function useBreakpoint() {
+  const [bp, setBp] = useState(() => {
+    if (typeof window === "undefined")
+      return { isMobile: false, isTablet: false, isDesktop: true };
+    const w = window.innerWidth;
+    return {
+      isMobile: w < 640,
+      isTablet: w >= 640 && w < 1024,
+      isDesktop: w >= 1024,
+    };
+  });
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      setBp({
+        isMobile: w < 640,
+        isTablet: w >= 640 && w < 1024,
+        isDesktop: w >= 1024,
+      });
+    };
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return bp;
+}
 
 // ===== DATA =====
 const NAV_LINKS = [
@@ -54,7 +81,7 @@ const PROJECTS = [
     id: 6,
     title: "Blog Platform",
     desc: "Platform blog dengan fitur markdown editor, komentar, dan kategorisasi artikel.",
-    tags: ["Nuxt.js", "Supabase", "TailwindCSS"],
+    tags: ["Nuxt.js", "Supabase"],
     year: "2022",
     color: "#2563EB",
   },
@@ -74,8 +101,8 @@ const BLOGS = [
     id: 2,
     title: "TailwindCSS vs CSS Biasa: Mana yang Lebih Baik?",
     excerpt:
-      "Perbandingan mendalam antara TailwindCSS dengan CSS konvensional dari sisi produktivitas dan maintainability.",
-    date: "2 April 2025",
+      "Perbandingan mendalam antara TailwindCSS dengan CSS konvensional dari sisi produktivitas.",
+    date: "2 Apr 2025",
     readTime: "6 menit",
     tag: "CSS",
   },
@@ -84,7 +111,7 @@ const BLOGS = [
     title: "Belajar Git dari Nol: Panduan untuk Pemula",
     excerpt:
       "Langkah demi langkah mempelajari Git mulai dari instalasi hingga workflow kolaborasi tim.",
-    date: "18 Maret 2025",
+    date: "18 Mar 2025",
     readTime: "10 menit",
     tag: "Git",
   },
@@ -93,7 +120,7 @@ const BLOGS = [
     title: "Optimasi Performa Web dengan Lighthouse",
     excerpt:
       "Teknik-teknik praktis meningkatkan skor Lighthouse dan membuat website kamu jauh lebih cepat.",
-    date: "5 Februari 2025",
+    date: "5 Feb 2025",
     readTime: "7 menit",
     tag: "Performance",
   },
@@ -109,16 +136,408 @@ const SKILLS = [
 ];
 
 const SOCIALS = [
-  { label: "GitHub", icon: "⬡", url: "https://github.com" },
+  { label: "GitHub", icon: "GH", url: "https://github.com" },
   { label: "LinkedIn", icon: "in", url: "https://linkedin.com" },
   { label: "Instagram", icon: "IG", url: "https://instagram.com" },
-  { label: "Twitter", icon: "𝕏", url: "https://twitter.com" },
+  { label: "Twitter", icon: "TW", url: "https://twitter.com" },
 ];
 
-// ===== COMPONENTS =====
+const EXPERIENCES = [
+  {
+    year: "2024 – Sekarang",
+    role: "Freelance Frontend Developer",
+    company: "Self-Employed",
+    desc: "Mengerjakan berbagai proyek web untuk klien dari berbagai industri, mulai dari landing page hingga aplikasi web kompleks.",
+  },
+  {
+    year: "2023 – 2024",
+    role: "Junior Web Developer",
+    company: "PT. Teknologi Maju",
+    desc: "Membangun dan memelihara antarmuka web menggunakan React.js dan TailwindCSS dalam tim agile.",
+  },
+  {
+    year: "2022 – 2023",
+    role: "Intern Frontend Dev",
+    company: "Startup Digital XYZ",
+    desc: "Membantu pengembangan komponen UI dan mempelajari best practices modern web development.",
+  },
+];
 
+// ===== THEME =====
+const t = (dark) => ({
+  bg: dark ? "#0f0f0f" : "#ffffff",
+  bgAlt: dark ? "#111827" : "#f0f9ff",
+  bgCard: dark ? "#111827" : "#f8fafc",
+  bgInput: dark ? "#1e293b" : "#ffffff",
+  text: dark ? "#f1f5f9" : "#0f172a",
+  muted: dark ? "#94a3b8" : "#475569",
+  border: dark ? "#1e3a8a" : "#bfdbfe",
+  shadow: dark ? "#1e3a8a" : "#93c5fd",
+});
+
+// ===== PRIMITIVES =====
+function SectionLabel({ label }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{ width: 32, height: 4, background: "#2563EB", flexShrink: 0 }}
+      />
+      <span
+        style={{
+          fontWeight: 800,
+          fontSize: "0.75rem",
+          color: "#2563EB",
+          textTransform: "uppercase",
+          letterSpacing: 2,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function Tag({ label, dark }) {
+  return (
+    <span
+      style={{
+        background: dark ? "#1e3a8a" : "#dbeafe",
+        border: `1px solid ${dark ? "#2563EB" : "#93c5fd"}`,
+        color: dark ? "#93c5fd" : "#1D4ED8",
+        fontSize: "0.68rem",
+        fontWeight: 700,
+        padding: "2px 7px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+const pressDown = (e) => {
+  e.currentTarget.style.boxShadow = "2px 2px 0 #0a0a0a";
+  e.currentTarget.style.transform = "translate(3px,3px)";
+};
+const pressUp = (e) => {
+  e.currentTarget.style.boxShadow = "5px 5px 0 #0a0a0a";
+  e.currentTarget.style.transform = "translate(0,0)";
+};
+
+function PrimaryBtn({ children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      onMouseDown={pressDown}
+      onMouseUp={pressUp}
+      style={{
+        fontWeight: 800,
+        fontSize: "0.95rem",
+        background: "#2563EB",
+        color: "#fff",
+        border: "3px solid #0a0a0a",
+        boxShadow: "5px 5px 0 #0a0a0a",
+        padding: "12px 24px",
+        cursor: "pointer",
+        transition: "all 0.1s",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function OutlineBtn({ children, onClick, dark }) {
+  return (
+    <button
+      onClick={onClick}
+      onMouseDown={pressDown}
+      onMouseUp={pressUp}
+      style={{
+        fontWeight: 800,
+        fontSize: "0.95rem",
+        background: "transparent",
+        color: dark ? "#f1f5f9" : "#0f172a",
+        border: `3px solid ${dark ? "#e2e8f0" : "#0a0a0a"}`,
+        boxShadow: `5px 5px 0 ${dark ? "#e2e8f0" : "#0a0a0a"}`,
+        padding: "12px 24px",
+        cursor: "pointer",
+        transition: "all 0.1s",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function SmallBtn({ children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        fontWeight: 700,
+        fontSize: "0.88rem",
+        background: "#2563EB",
+        color: "#fff",
+        border: "2px solid #1D4ED8",
+        boxShadow: "4px 4px 0 #1D4ED8",
+        padding: "9px 18px",
+        cursor: "pointer",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ===== CARDS =====
+function ProjectCard({ project, darkMode, large }) {
+  const th = t(darkMode);
+  return (
+    <div
+      style={{
+        background: th.bgCard,
+        border: `2px solid ${th.border}`,
+        boxShadow: `5px 5px 0 ${th.shadow}`,
+        overflow: "hidden",
+        cursor: "pointer",
+        transition: "transform 0.12s, box-shadow 0.12s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translate(-3px,-3px)";
+        e.currentTarget.style.boxShadow = `8px 8px 0 ${th.shadow}`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translate(0,0)";
+        e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
+      }}
+    >
+      <div
+        style={{
+          height: large ? 100 : 72,
+          background: project.color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: large ? "2rem" : "1.5rem",
+        }}
+      >
+        💻
+      </div>
+      <div style={{ padding: large ? "16px" : "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 6,
+            marginBottom: 6,
+          }}
+        >
+          <h3
+            style={{
+              fontWeight: 800,
+              fontSize: large ? "0.95rem" : "0.85rem",
+              color: th.text,
+              margin: 0,
+              lineHeight: 1.3,
+            }}
+          >
+            {project.title}
+          </h3>
+          <span
+            style={{
+              color: th.muted,
+              fontSize: "0.68rem",
+              fontWeight: 600,
+              flexShrink: 0,
+            }}
+          >
+            {project.year}
+          </span>
+        </div>
+        {large && (
+          <p
+            style={{
+              color: th.muted,
+              fontSize: "0.8rem",
+              lineHeight: 1.6,
+              margin: "0 0 10px",
+            }}
+          >
+            {project.desc}
+          </p>
+        )}
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {project.tags.map((tag) => (
+            <Tag key={tag} label={tag} dark={darkMode} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BlogCard({ blog, darkMode }) {
+  const th = t(darkMode);
+  return (
+    <div
+      style={{
+        background: th.bgCard,
+        border: `2px solid ${th.border}`,
+        boxShadow: `5px 5px 0 ${th.shadow}`,
+        padding: "16px",
+        cursor: "pointer",
+        transition: "transform 0.12s, box-shadow 0.12s",
+        display: "flex",
+        flexDirection: "column",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translate(-3px,-3px)";
+        e.currentTarget.style.boxShadow = `8px 8px 0 ${th.shadow}`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translate(0,0)";
+        e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
+      }}
+    >
+      <span
+        style={{
+          background: "#dbeafe",
+          border: "1.5px solid #2563EB",
+          color: "#1D4ED8",
+          fontWeight: 700,
+          fontSize: "0.68rem",
+          padding: "2px 9px",
+          alignSelf: "flex-start",
+          marginBottom: 10,
+        }}
+      >
+        {blog.tag}
+      </span>
+      <h3
+        style={{
+          fontWeight: 800,
+          fontSize: "0.9rem",
+          color: th.text,
+          margin: "0 0 8px",
+          lineHeight: 1.4,
+          flex: 1,
+        }}
+      >
+        {blog.title}
+      </h3>
+      <p
+        style={{
+          color: th.muted,
+          fontSize: "0.8rem",
+          lineHeight: 1.6,
+          margin: "0 0 10px",
+        }}
+      >
+        {blog.excerpt.slice(0, 80)}…
+      </p>
+      <p style={{ color: th.muted, fontSize: "0.7rem", margin: 0 }}>
+        {blog.date} · {blog.readTime}
+      </p>
+    </div>
+  );
+}
+
+// ===== CONTACT CTA =====
+function ContactCTA({ darkMode, setActivePage }) {
+  const { isMobile } = useBreakpoint();
+  return (
+    <div
+      style={{
+        background: "#2563EB",
+        border: "3px solid #0a0a0a",
+        boxShadow: "8px 8px 0 #0a0a0a",
+        padding: isMobile ? "2rem 1.25rem" : "3rem",
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        justifyContent: "space-between",
+        alignItems: isMobile ? "flex-start" : "center",
+        gap: "1.5rem",
+      }}
+    >
+      <div>
+        <h2
+          style={{
+            fontWeight: 900,
+            fontSize: isMobile ? "1.5rem" : "2rem",
+            color: "#fff",
+            margin: "0 0 8px",
+            letterSpacing: "-1px",
+          }}
+        >
+          Punya Ide Proyek? 💡
+        </h2>
+        <p style={{ color: "#bfdbfe", fontSize: "0.9rem", margin: 0 }}>
+          Mari wujudkan bersama! Saya siap membantu mewujudkan visi digital
+          Anda.
+        </p>
+      </div>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        <a
+          href="https://wa.me/6281234567890"
+          target="_blank"
+          rel="noreferrer"
+          onMouseDown={pressDown}
+          onMouseUp={pressUp}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: "#22c55e",
+            border: "3px solid #0a0a0a",
+            boxShadow: "5px 5px 0 #0a0a0a",
+            color: "#fff",
+            fontWeight: 800,
+            fontSize: "0.95rem",
+            padding: "12px 22px",
+            textDecoration: "none",
+            transition: "all 0.1s",
+          }}
+        >
+          💬 WhatsApp
+        </a>
+        <button
+          onClick={() => setActivePage("kontak")}
+          onMouseDown={pressDown}
+          onMouseUp={pressUp}
+          style={{
+            fontWeight: 800,
+            fontSize: "0.95rem",
+            background: "#fff",
+            color: "#1D4ED8",
+            border: "3px solid #0a0a0a",
+            boxShadow: "5px 5px 0 #0a0a0a",
+            padding: "12px 22px",
+            cursor: "pointer",
+            transition: "all 0.1s",
+          }}
+        >
+          Kirim Pesan
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ===== NAVBAR =====
 function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
+  const { isMobile, isTablet } = useBreakpoint();
   const [menuOpen, setMenuOpen] = useState(false);
+  const th = t(darkMode);
+  const isSmall = isMobile || isTablet;
+
+  const navigate = (id) => {
+    setActivePage(id);
+    setMenuOpen(false);
+  };
 
   return (
     <nav
@@ -128,30 +547,29 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: darkMode ? "#0a0a0a" : "#ffffff",
-        borderBottom: `3px solid ${darkMode ? "#2563EB" : "#1D4ED8"}`,
-        boxShadow: darkMode ? "0 4px 0 0 #2563EB" : "0 4px 0 0 #1D4ED8",
+        background: th.bg,
+        borderBottom: "3px solid #2563EB",
+        boxShadow: "0 4px 0 0 #1D4ED8",
       }}
     >
       <div
         style={{
           maxWidth: 1200,
           margin: "0 auto",
-          padding: "0 1.5rem",
+          padding: "0 1.25rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          height: 68,
+          height: 62,
         }}
       >
         {/* Logo */}
         <button
-          onClick={() => setActivePage("beranda")}
+          onClick={() => navigate("beranda")}
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 800,
-            fontSize: "1.4rem",
-            color: darkMode ? "#ffffff" : "#0a0a0a",
+            fontWeight: 900,
+            fontSize: "1.25rem",
+            color: th.text,
             background: "none",
             border: "none",
             cursor: "pointer",
@@ -159,112 +577,207 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
             display: "flex",
             alignItems: "center",
             gap: 8,
+            padding: 0,
           }}
         >
           <span
             style={{
               background: "#2563EB",
               color: "#fff",
-              padding: "2px 8px",
+              padding: "1px 8px",
               border: "2px solid #0a0a0a",
-              boxShadow: "3px 3px 0 #0a0a0a",
-              fontWeight: 900,
-              fontSize: "1.1rem",
+              boxShadow: "2px 2px 0 #0a0a0a",
             }}
           >
-            RAP
+            RE
           </span>
+          <span>Restu.</span>
         </button>
 
-        {/* Desktop Nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {/* Desktop nav */}
+        {!isSmall && (
+          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {NAV_LINKS.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => navigate(link.id)}
+                style={{
+                  fontWeight: 600,
+                  fontSize: "0.88rem",
+                  color: activePage === link.id ? "#2563EB" : th.muted,
+                  background:
+                    activePage === link.id
+                      ? darkMode
+                        ? "#1e3a8a30"
+                        : "#dbeafe"
+                      : "none",
+                  border:
+                    activePage === link.id
+                      ? "2px solid #2563EB"
+                      : "2px solid transparent",
+                  padding: "6px 13px",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+              >
+                {link.label}
+              </button>
+            ))}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              style={{
+                marginLeft: 8,
+                width: 36,
+                height: 36,
+                background: darkMode ? "#1D4ED8" : "#dbeafe",
+                border: "2px solid #1D4ED8",
+                boxShadow: "3px 3px 0 #1D4ED8",
+                cursor: "pointer",
+                fontSize: "1rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+          </div>
+        )}
+
+        {/* Mobile controls */}
+        {isSmall && (
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              style={{
+                width: 34,
+                height: 34,
+                background: darkMode ? "#1D4ED8" : "#dbeafe",
+                border: "2px solid #1D4ED8",
+                cursor: "pointer",
+                fontSize: "0.95rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                width: 34,
+                height: 34,
+                background: "transparent",
+                border: `2px solid ${th.border}`,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                padding: 0,
+              }}
+            >
+              {menuOpen ? (
+                <span
+                  style={{ fontSize: "1rem", color: th.text, lineHeight: 1 }}
+                >
+                  ✕
+                </span>
+              ) : (
+                <>
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      style={{
+                        display: "block",
+                        width: 14,
+                        height: 2,
+                        background: th.text,
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile dropdown */}
+      {isSmall && menuOpen && (
+        <div
+          style={{
+            background: th.bg,
+            borderTop: `2px solid ${th.border}`,
+            padding: "0.5rem 1.25rem 1rem",
+          }}
+        >
           {NAV_LINKS.map((link) => (
             <button
               key={link.id}
-              onClick={() => setActivePage(link.id)}
+              onClick={() => navigate(link.id)}
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 600,
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                fontWeight: 700,
                 fontSize: "0.95rem",
-                color:
-                  activePage === link.id
-                    ? "#2563EB"
-                    : darkMode
-                      ? "#e5e7eb"
-                      : "#374151",
+                color: activePage === link.id ? "#2563EB" : th.text,
                 background:
                   activePage === link.id
                     ? darkMode
                       ? "#1e3a8a20"
                       : "#dbeafe"
                     : "none",
-                border:
+                border: "none",
+                borderLeft:
                   activePage === link.id
-                    ? "2px solid #2563EB"
-                    : "2px solid transparent",
-                padding: "6px 14px",
+                    ? "4px solid #2563EB"
+                    : "4px solid transparent",
+                padding: "10px 14px",
                 cursor: "pointer",
-                transition: "all 0.15s",
+                marginBottom: 2,
               }}
             >
               {link.label}
             </button>
           ))}
-
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            style={{
-              marginLeft: 12,
-              width: 40,
-              height: 40,
-              background: darkMode ? "#1D4ED8" : "#dbeafe",
-              border: "2px solid #1D4ED8",
-              boxShadow: "3px 3px 0 #1D4ED8",
-              cursor: "pointer",
-              fontSize: "1.2rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "all 0.15s",
-            }}
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
 
+// ===== FOOTER =====
 function Footer({ darkMode, setActivePage }) {
-  const bg = darkMode ? "#0a0a0a" : "#0f172a";
-  const textMuted = "#94a3b8";
+  const { isMobile, isTablet } = useBreakpoint();
+  const muted = "#94a3b8";
+  const cols = isMobile ? "1fr" : isTablet ? "1fr 1fr" : "2fr 1fr 1fr";
 
   return (
     <footer
       style={{
-        background: bg,
+        background: darkMode ? "#080808" : "#0f172a",
         borderTop: "4px solid #2563EB",
-        padding: "4rem 1.5rem 2rem",
+        padding: isMobile ? "3rem 1.25rem 1.5rem" : "4rem 1.5rem 2rem",
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr",
-            gap: "3rem",
-            marginBottom: "3rem",
+            gridTemplateColumns: cols,
+            gap: isMobile ? "2rem" : "3rem",
+            marginBottom: "2.5rem",
           }}
         >
-          {/* Brand */}
           <div>
             <div
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 900,
-                fontSize: "1.6rem",
+                fontSize: "1.35rem",
                 color: "#fff",
                 marginBottom: 12,
                 display: "flex",
@@ -276,27 +789,28 @@ function Footer({ darkMode, setActivePage }) {
                 style={{
                   background: "#2563EB",
                   color: "#fff",
-                  padding: "2px 10px",
+                  padding: "1px 9px",
                   border: "2px solid #fff",
-                  boxShadow: "3px 3px 0 #2563EB",
+                  boxShadow: "2px 2px 0 #2563EB",
                 }}
               >
-                RAP
+                RE
               </span>
+              Restu.
             </div>
             <p
               style={{
-                color: textMuted,
+                color: muted,
                 lineHeight: 1.7,
-                maxWidth: 300,
-                fontSize: "0.95rem",
+                maxWidth: 280,
+                fontSize: "0.88rem",
+                margin: "0 0 1.25rem",
               }}
             >
-              Software Developer yang bersemangat membangun pengalaman perangkat
-              lunak yang menarik dan fungsional.
+              Frontend Developer yang bersemangat membangun pengalaman web yang
+              menarik dan fungsional.
             </p>
-            {/* Socials */}
-            <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
@@ -305,16 +819,16 @@ function Footer({ darkMode, setActivePage }) {
                   rel="noreferrer"
                   title={s.label}
                   style={{
-                    width: 38,
-                    height: 38,
+                    width: 34,
+                    height: 34,
                     background: "transparent",
                     border: "2px solid #334155",
-                    color: "#94a3b8",
+                    color: muted,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontWeight: 700,
-                    fontSize: "0.75rem",
+                    fontSize: "0.68rem",
                     textDecoration: "none",
                     transition: "all 0.15s",
                   }}
@@ -325,7 +839,7 @@ function Footer({ darkMode, setActivePage }) {
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = "#334155";
-                    e.currentTarget.style.color = "#94a3b8";
+                    e.currentTarget.style.color = muted;
                     e.currentTarget.style.background = "transparent";
                   }}
                 >
@@ -335,17 +849,15 @@ function Footer({ darkMode, setActivePage }) {
             </div>
           </div>
 
-          {/* Navigation */}
           <div>
             <p
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
                 color: "#fff",
-                marginBottom: 16,
+                marginBottom: 14,
                 textTransform: "uppercase",
                 letterSpacing: 1,
-                fontSize: "0.85rem",
+                fontSize: "0.75rem",
               }}
             >
               Navigasi
@@ -358,19 +870,17 @@ function Footer({ darkMode, setActivePage }) {
                   style={{
                     background: "none",
                     border: "none",
-                    color: textMuted,
+                    color: muted,
                     cursor: "pointer",
                     textAlign: "left",
-                    fontSize: "0.95rem",
+                    fontSize: "0.88rem",
                     padding: 0,
                     transition: "color 0.15s",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.color = "#2563EB")
                   }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = textMuted)
-                  }
+                  onMouseLeave={(e) => (e.currentTarget.style.color = muted)}
                 >
                   {link.label}
                 </button>
@@ -378,51 +888,53 @@ function Footer({ darkMode, setActivePage }) {
             </div>
           </div>
 
-          {/* Contact */}
-          <div>
-            <p
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                color: "#fff",
-                marginBottom: 16,
-                textTransform: "uppercase",
-                letterSpacing: 1,
-                fontSize: "0.85rem",
-              }}
-            >
-              Kontak
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                "restuanggia@email.com",
-                "Bandar Lampung, Indonesia",
-                "Tersedia untuk freelance",
-              ].map((item, i) => (
-                <p
-                  key={i}
-                  style={{ color: textMuted, fontSize: "0.9rem", margin: 0 }}
-                >
-                  {item}
-                </p>
-              ))}
+          {!isMobile && (
+            <div>
+              <p
+                style={{
+                  fontWeight: 700,
+                  color: "#fff",
+                  marginBottom: 14,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  fontSize: "0.75rem",
+                }}
+              >
+                Kontak
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  "restuanggia@email.com",
+                  "Bandar Lampung, Indonesia",
+                  "Tersedia untuk freelance",
+                ].map((item, i) => (
+                  <p
+                    key={i}
+                    style={{ color: muted, fontSize: "0.85rem", margin: 0 }}
+                  >
+                    {item}
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div
           style={{
             borderTop: "1px solid #1e293b",
-            paddingTop: 24,
+            paddingTop: 18,
             display: "flex",
+            flexDirection: isMobile ? "column" : "row",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: isMobile ? "flex-start" : "center",
+            gap: 8,
           }}
         >
-          <p style={{ color: "#475569", fontSize: "0.85rem", margin: 0 }}>
-            © 2025 Restu Anggia Putra. Dibuat dengan sepenuh ❤️.
+          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
+            © 2025 Restu Anggia. Dibuat dengan ❤️ menggunakan React + Vite.
           </p>
-          <p style={{ color: "#475569", fontSize: "0.85rem", margin: 0 }}>
+          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
             Neobrutalism Design
           </p>
         </div>
@@ -431,71 +943,72 @@ function Footer({ darkMode, setActivePage }) {
   );
 }
 
-// ===== PAGES =====
-
+// ===== HOME PAGE =====
 function HomePage({ darkMode, setActivePage }) {
-  const bg = darkMode ? "#0f0f0f" : "#ffffff";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
-  const cardBg = darkMode ? "#111827" : "#f8fafc";
-  const border = darkMode ? "#1e3a8a" : "#bfdbfe";
+  const { isMobile, isTablet } = useBreakpoint();
+  const th = t(darkMode);
+  const isSmall = isMobile || isTablet;
+  const projCols = isMobile
+    ? "1fr 1fr"
+    : isTablet
+      ? "1fr 1fr"
+      : "repeat(4, 1fr)";
 
   return (
-    <div style={{ background: bg, minHeight: "100vh" }}>
-      {/* Hero Section */}
+    <div style={{ background: th.bg }}>
+      {/* HERO */}
       <section
         style={{
-          padding: "10rem 1.5rem 6rem",
+          padding: isMobile
+            ? "6.5rem 1.25rem 3.5rem"
+            : isTablet
+              ? "8rem 2rem 5rem"
+              : "9rem 1.5rem 6rem",
           maxWidth: 1200,
           margin: "0 auto",
           position: "relative",
         }}
       >
-        {/* Decorative block */}
-        <div
-          style={{
-            position: "absolute",
-            top: 100,
-            right: 80,
-            width: 220,
-            height: 220,
-            background: "#2563EB",
-            border: "4px solid #0a0a0a",
-            boxShadow: darkMode ? "8px 8px 0 #1e3a8a" : "8px 8px 0 #1e40af",
-            zIndex: 0,
-            opacity: 0.15,
-          }}
-        />
-
+        {!isMobile && (
+          <div
+            style={{
+              position: "absolute",
+              top: 80,
+              right: isTablet ? 30 : 80,
+              width: isTablet ? 140 : 200,
+              height: isTablet ? 140 : 200,
+              background: "#2563EB",
+              border: "4px solid #0a0a0a",
+              boxShadow: `8px 8px 0 ${th.shadow}`,
+              zIndex: 0,
+              opacity: 0.1,
+            }}
+          />
+        )}
         <div style={{ position: "relative", zIndex: 1 }}>
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 10,
+              gap: 8,
               background: "#dbeafe",
               border: "2px solid #2563EB",
               boxShadow: "4px 4px 0 #1D4ED8",
-              padding: "6px 16px",
-              marginBottom: 32,
+              padding: "5px 14px",
+              marginBottom: 24,
             }}
           >
             <span
               style={{
-                width: 8,
-                height: 8,
+                width: 7,
+                height: 7,
                 borderRadius: "50%",
                 background: "#22c55e",
                 animation: "pulse 2s infinite",
               }}
             />
             <span
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 600,
-                color: "#1D4ED8",
-                fontSize: "0.9rem",
-              }}
+              style={{ fontWeight: 600, color: "#1D4ED8", fontSize: "0.82rem" }}
             >
               Tersedia untuk Proyek Baru
             </span>
@@ -503,12 +1016,15 @@ function HomePage({ darkMode, setActivePage }) {
 
           <h1
             style={{
-              fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 900,
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              color: text,
-              lineHeight: 1.05,
-              marginBottom: 24,
+              fontSize: isMobile
+                ? "2rem"
+                : isTablet
+                  ? "2.8rem"
+                  : "clamp(2.8rem,5vw,4.2rem)",
+              color: th.text,
+              lineHeight: 1.08,
+              marginBottom: 18,
               letterSpacing: "-2px",
             }}
           >
@@ -516,118 +1032,73 @@ function HomePage({ darkMode, setActivePage }) {
             <span
               style={{
                 color: "#2563EB",
-                borderBottom: "6px solid #2563EB",
+                borderBottom: "5px solid #2563EB",
                 paddingBottom: 2,
               }}
             >
-              Restu Anggia Putra
+              Restu Anggia
             </span>
             <br />
-            Software Developer 🚀
+            Frontend Developer 🚀
           </h1>
 
           <p
             style={{
-              fontSize: "1.15rem",
-              color: muted,
-              maxWidth: 580,
+              fontSize: isMobile ? "0.92rem" : "1.05rem",
+              color: th.muted,
+              maxWidth: 540,
               lineHeight: 1.8,
-              marginBottom: 40,
+              marginBottom: 32,
             }}
           >
             Saya membangun antarmuka web yang indah, cepat, dan mudah digunakan.
-            Spesialis React.js & TailwindCSS yang berbasis di Bandar Lampung,
+            Spesialis React.js & TailwindCSS berbasis di Bandar Lampung,
             Indonesia.
           </p>
 
-          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <button
-              onClick={() => setActivePage("portfolio")}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: "1rem",
-                background: "#2563EB",
-                color: "#fff",
-                border: "3px solid #0a0a0a",
-                boxShadow: "5px 5px 0 #0a0a0a",
-                padding: "14px 28px",
-                cursor: "pointer",
-                transition: "all 0.1s",
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.boxShadow = "2px 2px 0 #0a0a0a";
-                e.currentTarget.style.transform = "translate(3px, 3px)";
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.boxShadow = "5px 5px 0 #0a0a0a";
-                e.currentTarget.style.transform = "translate(0,0)";
-              }}
-            >
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <PrimaryBtn onClick={() => setActivePage("portfolio")}>
               Lihat Portfolio →
-            </button>
-            <button
-              onClick={() => setActivePage("kontak")}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: "1rem",
-                background: "transparent",
-                color: text,
-                border: "3px solid " + (darkMode ? "#e2e8f0" : "#0a0a0a"),
-                boxShadow: darkMode ? "5px 5px 0 #e2e8f0" : "5px 5px 0 #0a0a0a",
-                padding: "14px 28px",
-                cursor: "pointer",
-                transition: "all 0.1s",
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.boxShadow = "2px 2px 0 #0a0a0a";
-                e.currentTarget.style.transform = "translate(3px, 3px)";
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.boxShadow = "5px 5px 0 #0a0a0a";
-                e.currentTarget.style.transform = "translate(0,0)";
-              }}
-            >
+            </PrimaryBtn>
+            <OutlineBtn onClick={() => setActivePage("kontak")} dark={darkMode}>
               Hubungi Saya
-            </button>
+            </OutlineBtn>
           </div>
 
-          {/* Stats */}
           <div
             style={{
               display: "flex",
-              gap: 32,
-              marginTop: 60,
-              paddingTop: 40,
-              borderTop: `2px dashed ${border}`,
+              gap: isMobile ? 20 : 36,
+              marginTop: 44,
+              paddingTop: 32,
+              borderTop: `2px dashed ${th.border}`,
+              flexWrap: "wrap",
             }}
           >
             {[
               { num: "20+", label: "Proyek Selesai" },
               { num: "3+", label: "Tahun Pengalaman" },
               { num: "10+", label: "Klien Puas" },
-            ].map((stat) => (
-              <div key={stat.label}>
+            ].map((s) => (
+              <div key={s.label}>
                 <p
                   style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 900,
-                    fontSize: "2rem",
+                    fontSize: isMobile ? "1.5rem" : "1.9rem",
                     color: "#2563EB",
                     margin: 0,
                   }}
                 >
-                  {stat.num}
+                  {s.num}
                 </p>
                 <p
                   style={{
-                    color: muted,
-                    fontSize: "0.9rem",
-                    margin: "4px 0 0",
+                    color: th.muted,
+                    fontSize: "0.8rem",
+                    margin: "3px 0 0",
                   }}
                 >
-                  {stat.label}
+                  {s.label}
                 </p>
               </div>
             ))}
@@ -635,63 +1106,61 @@ function HomePage({ darkMode, setActivePage }) {
         </div>
       </section>
 
-      {/* Tentang Saya Section */}
+      {/* TENTANG SINGKAT */}
       <section
         style={{
-          padding: "5rem 1.5rem",
-          background: darkMode ? "#111827" : "#f0f9ff",
-          borderTop: "3px solid " + border,
-          borderBottom: "3px solid " + border,
+          padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem",
+          background: th.bgAlt,
+          borderTop: `3px solid ${th.border}`,
+          borderBottom: `3px solid ${th.border}`,
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Tentang Saya" darkMode={darkMode} />
+          <SectionLabel label="Tentang Saya" />
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "4rem",
+              gridTemplateColumns: isSmall ? "1fr" : "1fr 1fr",
+              gap: isSmall ? "2rem" : "4rem",
               alignItems: "center",
-              marginTop: 40,
+              marginTop: 32,
             }}
           >
             <div>
               <h2
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 800,
-                  fontSize: "2rem",
-                  color: text,
-                  marginBottom: 20,
-                  letterSpacing: "-1px",
+                  fontSize: isMobile ? "1.4rem" : "1.9rem",
+                  color: th.text,
+                  marginBottom: 14,
+                  letterSpacing: "-0.5px",
                 }}
               >
                 Developer yang suka kerapian kode dan keindahan UI
               </h2>
               <p
                 style={{
-                  color: muted,
+                  color: th.muted,
                   lineHeight: 1.8,
                   marginBottom: 20,
-                  fontSize: "1rem",
+                  fontSize: "0.92rem",
                 }}
               >
-                Saya adalah seorang Software Developer dengan passion besar pada
-                dunia web development. Berfokus pada pembuatan antarmuka yang
-                tidak hanya indah secara visual, tapi juga performa tinggi dan
-                aksesibel untuk semua pengguna.
+                Saya adalah seorang Frontend Developer dengan passion besar pada
+                dunia web. Berfokus pada pembuatan antarmuka yang tidak hanya
+                indah secara visual, tapi juga performa tinggi dan aksesibel.
               </p>
               <button
                 onClick={() => setActivePage("tentang")}
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   background: "transparent",
                   border: "2px solid #2563EB",
                   color: "#2563EB",
-                  padding: "10px 22px",
+                  padding: "9px 20px",
                   cursor: "pointer",
                   boxShadow: "4px 4px 0 #2563EB",
+                  fontSize: "0.88rem",
                   transition: "all 0.1s",
                 }}
               >
@@ -702,7 +1171,7 @@ function HomePage({ darkMode, setActivePage }) {
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap: 12,
+                gap: 10,
               }}
             >
               {SKILLS.slice(0, 4).map((sk) => (
@@ -710,20 +1179,17 @@ function HomePage({ darkMode, setActivePage }) {
                   key={sk.label}
                   style={{
                     background: darkMode ? "#1e293b" : "#fff",
-                    border: "2px solid " + border,
-                    boxShadow: darkMode
-                      ? "4px 4px 0 #1e3a8a"
-                      : "4px 4px 0 #93c5fd",
-                    padding: "16px",
+                    border: `2px solid ${th.border}`,
+                    boxShadow: `4px 4px 0 ${th.shadow}`,
+                    padding: 14,
                   }}
                 >
                   <p
                     style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
                       fontWeight: 700,
-                      color: text,
-                      fontSize: "0.9rem",
-                      margin: "0 0 8px",
+                      color: th.text,
+                      fontSize: "0.82rem",
+                      margin: "0 0 7px",
                     }}
                   >
                     {sk.label}
@@ -732,7 +1198,6 @@ function HomePage({ darkMode, setActivePage }) {
                     style={{
                       height: 6,
                       background: darkMode ? "#334155" : "#e2e8f0",
-                      overflow: "hidden",
                     }}
                   >
                     <div
@@ -746,9 +1211,9 @@ function HomePage({ darkMode, setActivePage }) {
                   <p
                     style={{
                       color: "#2563EB",
-                      fontSize: "0.8rem",
+                      fontSize: "0.72rem",
                       fontWeight: 700,
-                      margin: "6px 0 0",
+                      margin: "4px 0 0",
                     }}
                   >
                     {sk.level}%
@@ -760,26 +1225,24 @@ function HomePage({ darkMode, setActivePage }) {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section style={{ padding: "5rem 1.5rem" }}>
+      {/* PORTFOLIO PREVIEW */}
+      <section style={{ padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Portfolio" darkMode={darkMode} />
+          <SectionLabel label="Portfolio" />
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
-              marginTop: 20,
-              marginBottom: 36,
+              margin: "14px 0 24px",
             }}
           >
             <h2
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
-                fontSize: "2rem",
-                color: text,
-                letterSpacing: "-1px",
+                fontSize: isMobile ? "1.4rem" : "1.9rem",
+                color: th.text,
+                letterSpacing: "-0.5px",
                 margin: 0,
               }}
             >
@@ -787,63 +1250,45 @@ function HomePage({ darkMode, setActivePage }) {
             </h2>
           </div>
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 20,
-            }}
+            style={{ display: "grid", gridTemplateColumns: projCols, gap: 14 }}
           >
             {PROJECTS.slice(0, 4).map((p) => (
               <ProjectCard key={p.id} project={p} darkMode={darkMode} />
             ))}
           </div>
-          <div style={{ textAlign: "right", marginTop: 24 }}>
-            <button
-              onClick={() => setActivePage("portfolio")}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                background: "#2563EB",
-                color: "#fff",
-                border: "2px solid #1D4ED8",
-                boxShadow: "4px 4px 0 #1D4ED8",
-                padding: "10px 22px",
-                cursor: "pointer",
-              }}
-            >
+          <div style={{ textAlign: "right", marginTop: 18 }}>
+            <SmallBtn onClick={() => setActivePage("portfolio")}>
               Lihat Selengkapnya →
-            </button>
+            </SmallBtn>
           </div>
         </div>
       </section>
 
-      {/* Blog Section */}
+      {/* BLOG PREVIEW */}
       <section
         style={{
-          padding: "5rem 1.5rem",
-          background: darkMode ? "#111827" : "#f0f9ff",
-          borderTop: "3px solid " + border,
-          borderBottom: "3px solid " + border,
+          padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem",
+          background: th.bgAlt,
+          borderTop: `3px solid ${th.border}`,
+          borderBottom: `3px solid ${th.border}`,
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Blog" darkMode={darkMode} />
+          <SectionLabel label="Blog" />
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
-              marginTop: 20,
-              marginBottom: 36,
+              margin: "14px 0 24px",
             }}
           >
             <h2
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
-                fontSize: "2rem",
-                color: text,
-                letterSpacing: "-1px",
+                fontSize: isMobile ? "1.4rem" : "1.9rem",
+                color: th.text,
+                letterSpacing: "-0.5px",
                 margin: 0,
               }}
             >
@@ -851,98 +1296,70 @@ function HomePage({ darkMode, setActivePage }) {
             </h2>
           </div>
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 20,
-            }}
+            style={{ display: "grid", gridTemplateColumns: projCols, gap: 14 }}
           >
             {BLOGS.map((b) => (
               <BlogCard key={b.id} blog={b} darkMode={darkMode} />
             ))}
           </div>
-          <div style={{ textAlign: "right", marginTop: 24 }}>
-            <button
-              onClick={() => setActivePage("blog")}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                background: "#2563EB",
-                color: "#fff",
-                border: "2px solid #1D4ED8",
-                boxShadow: "4px 4px 0 #1D4ED8",
-                padding: "10px 22px",
-                cursor: "pointer",
-              }}
-            >
+          <div style={{ textAlign: "right", marginTop: 18 }}>
+            <SmallBtn onClick={() => setActivePage("blog")}>
               Lihat Selengkapnya →
-            </button>
+            </SmallBtn>
           </div>
         </div>
       </section>
 
-      {/* Kontak CTA */}
-      <section style={{ padding: "5rem 1.5rem" }}>
-        <ContactCTA darkMode={darkMode} setActivePage={setActivePage} />
+      {/* CTA */}
+      <section style={{ padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <ContactCTA darkMode={darkMode} setActivePage={setActivePage} />
+        </div>
       </section>
     </div>
   );
 }
 
+// ===== TENTANG PAGE =====
 function TentangPage({ darkMode }) {
-  const bg = darkMode ? "#0f0f0f" : "#ffffff";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
-  const border = darkMode ? "#1e3a8a" : "#bfdbfe";
-  const cardBg = darkMode ? "#111827" : "#f8fafc";
-
-  const EXPERIENCES = [
-    {
-      year: "2024 – Sekarang",
-      role: "Freelance Software Developer",
-      company: "Self-Employed",
-      desc: "Mengerjakan berbagai proyek perangkat lunak untuk klien dari berbagai industri, mulai dari aplikasi web hingga solusi mobile.",
-    },
-    {
-      year: "2023 – 2024",
-      role: "Junior Web Developer",
-      company: "PT. Teknologi Maju",
-      desc: "Membangun dan memelihara antarmuka web menggunakan React.js dan TailwindCSS dalam tim agile.",
-    },
-    {
-      year: "2022 – 2023",
-      role: "Intern Frontend Dev",
-      company: "Startup Digital XYZ",
-      desc: "Membantu pengembangan komponen UI dan mempelajari best practices modern web development.",
-    },
-  ];
+  const { isMobile, isTablet } = useBreakpoint();
+  const th = t(darkMode);
+  const isSmall = isMobile || isTablet;
 
   return (
-    <div style={{ background: bg, minHeight: "100vh", paddingTop: 80 }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "4rem 1.5rem" }}>
-        <SectionLabel label="Tentang Saya" darkMode={darkMode} />
+    <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
+      <div
+        style={{
+          maxWidth: 900,
+          margin: "0 auto",
+          padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
+        }}
+      >
+        <SectionLabel label="Tentang Saya" />
 
         {/* Profile */}
         <div
           style={{
             display: "flex",
-            gap: "3rem",
-            alignItems: "center",
-            marginTop: 40,
-            marginBottom: 60,
+            flexDirection: isSmall ? "column" : "row",
+            gap: isSmall ? "1.5rem" : "3rem",
+            alignItems: isSmall ? "center" : "flex-start",
+            marginTop: 32,
+            marginBottom: 40,
+            textAlign: isSmall ? "center" : "left",
           }}
         >
           <div
             style={{
-              width: 180,
-              height: 180,
+              width: isSmall ? 120 : 160,
+              height: isSmall ? 120 : 160,
               background: "#2563EB",
-              border: "4px solid " + (darkMode ? "#e2e8f0" : "#0a0a0a"),
-              boxShadow: darkMode ? "8px 8px 0 #1e3a8a" : "8px 8px 0 #1D4ED8",
+              border: `4px solid ${darkMode ? "#e2e8f0" : "#0a0a0a"}`,
+              boxShadow: `6px 6px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "4rem",
+              fontSize: isSmall ? "2.5rem" : "3.5rem",
               flexShrink: 0,
             }}
           >
@@ -951,31 +1368,37 @@ function TentangPage({ darkMode }) {
           <div>
             <h1
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 900,
-                fontSize: "2.5rem",
-                color: text,
-                margin: "0 0 8px",
+                fontSize: isMobile ? "1.8rem" : "2.4rem",
+                color: th.text,
+                margin: "0 0 6px",
                 letterSpacing: "-1px",
               }}
             >
-              Restu Anggia Putra
+              Restu Anggia
             </h1>
             <p
               style={{
                 color: "#2563EB",
                 fontWeight: 700,
-                fontSize: "1.1rem",
-                margin: "0 0 16px",
+                fontSize: "0.95rem",
+                margin: "0 0 12px",
               }}
             >
-              Software Developer & UI Enthusiast
+              Frontend Developer & UI Enthusiast
             </p>
-            <p style={{ color: muted, lineHeight: 1.8, maxWidth: 500 }}>
+            <p
+              style={{
+                color: th.muted,
+                lineHeight: 1.8,
+                fontSize: "0.92rem",
+                maxWidth: 480,
+              }}
+            >
               Halo! Saya Restu, seorang developer yang suka menciptakan
               pengalaman digital yang bermakna. Berasal dari Bandar Lampung,
-              Indonesia, saya percaya bahwa kode yang baik bukan hanya tentang
-              fungsionalitas, tapi juga tentang keindahan dan keterbacaan.
+              Indonesia, saya percaya kode yang baik bukan hanya fungsional tapi
+              juga indah dan mudah dibaca.
             </p>
           </div>
         </div>
@@ -983,36 +1406,44 @@ function TentangPage({ darkMode }) {
         {/* Bio */}
         <div
           style={{
-            background: cardBg,
-            border: "2px solid " + border,
-            boxShadow: darkMode ? "6px 6px 0 #1e3a8a" : "6px 6px 0 #93c5fd",
-            padding: "2rem",
-            marginBottom: 48,
+            background: th.bgCard,
+            border: `2px solid ${th.border}`,
+            boxShadow: `5px 5px 0 ${th.shadow}`,
+            padding: isMobile ? "1.25rem" : "1.75rem",
+            marginBottom: 36,
           }}
         >
           <h2
             style={{
-              fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 800,
-              fontSize: "1.4rem",
-              color: text,
-              marginBottom: 16,
+              fontSize: "1.2rem",
+              color: th.text,
+              marginBottom: 12,
             }}
           >
             💡 Siapa Saya?
           </h2>
-          <p style={{ color: muted, lineHeight: 1.9, marginBottom: 16 }}>
-            Perjalanan saya di dunia programming dimulai dari rasa penasaran
-            yang besar — bagaimana sebuah website bisa terlihat indah sekaligus
-            berfungsi dengan baik? Pertanyaan itulah yang mendorong saya belajar
-            HTML, CSS, JavaScript, dan akhirnya React.js.
+          <p
+            style={{
+              color: th.muted,
+              lineHeight: 1.9,
+              marginBottom: 12,
+              fontSize: "0.9rem",
+            }}
+          >
+            Perjalanan saya di dunia programming dimulai dari rasa penasaran —
+            bagaimana website bisa terlihat indah sekaligus berfungsi dengan
+            baik? Pertanyaan itu mendorong saya belajar HTML, CSS, JavaScript,
+            dan akhirnya React.js.
           </p>
-          <p style={{ color: muted, lineHeight: 1.9, marginBottom: 16 }}>
-            Saya percaya bahwa desain dan kode harus berjalan beriringan. Itulah
-            mengapa saya selalu memperhatikan detail visual sambil tetap menjaga
-            kode tetap bersih dan mudah dipelihara.
-          </p>
-          <p style={{ color: muted, lineHeight: 1.9 }}>
+          <p
+            style={{
+              color: th.muted,
+              lineHeight: 1.9,
+              fontSize: "0.9rem",
+              margin: 0,
+            }}
+          >
             Di luar coding, saya gemar membaca artikel teknologi, mengeksplor
             desain antarmuka terbaru, dan berbagi pengetahuan melalui tulisan di
             blog ini.
@@ -1022,11 +1453,10 @@ function TentangPage({ darkMode }) {
         {/* Skills */}
         <h2
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 800,
-            fontSize: "1.6rem",
-            color: text,
-            marginBottom: 24,
+            fontSize: "1.4rem",
+            color: th.text,
+            marginBottom: 18,
           }}
         >
           🛠 Tech Stack
@@ -1034,33 +1464,32 @@ function TentangPage({ darkMode }) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 16,
-            marginBottom: 60,
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: 12,
+            marginBottom: 40,
           }}
         >
           {SKILLS.map((sk) => (
             <div
               key={sk.label}
               style={{
-                background: cardBg,
-                border: "2px solid " + border,
-                padding: "16px 20px",
+                background: th.bgCard,
+                border: `2px solid ${th.border}`,
+                padding: "13px 16px",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  marginBottom: 10,
+                  marginBottom: 8,
                 }}
               >
                 <span
                   style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 700,
-                    color: text,
-                    fontSize: "0.95rem",
+                    color: th.text,
+                    fontSize: "0.88rem",
                   }}
                 >
                   {sk.label}
@@ -1069,7 +1498,7 @@ function TentangPage({ darkMode }) {
                   style={{
                     fontWeight: 700,
                     color: "#2563EB",
-                    fontSize: "0.9rem",
+                    fontSize: "0.82rem",
                   }}
                 >
                   {sk.level}%
@@ -1077,7 +1506,7 @@ function TentangPage({ darkMode }) {
               </div>
               <div
                 style={{
-                  height: 8,
+                  height: 7,
                   background: darkMode ? "#1e293b" : "#e2e8f0",
                 }}
               >
@@ -1085,7 +1514,7 @@ function TentangPage({ darkMode }) {
                   style={{
                     height: "100%",
                     width: sk.level + "%",
-                    background: "linear-gradient(90deg, #1D4ED8, #3B82F6)",
+                    background: "#2563EB",
                   }}
                 />
               </div>
@@ -1096,35 +1525,36 @@ function TentangPage({ darkMode }) {
         {/* Experience */}
         <h2
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 800,
-            fontSize: "1.6rem",
-            color: text,
-            marginBottom: 24,
+            fontSize: "1.4rem",
+            color: th.text,
+            marginBottom: 18,
           }}
         >
           💼 Pengalaman
         </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {EXPERIENCES.map((exp, i) => (
             <div
               key={i}
               style={{
                 display: "flex",
-                gap: 24,
-                background: cardBg,
-                border: "2px solid " + border,
-                boxShadow: darkMode ? "4px 4px 0 #1e3a8a" : "4px 4px 0 #93c5fd",
-                padding: "20px 24px",
+                flexDirection: isMobile ? "column" : "row",
+                gap: isMobile ? 6 : 22,
+                background: th.bgCard,
+                border: `2px solid ${th.border}`,
+                boxShadow: `4px 4px 0 ${th.shadow}`,
+                padding: isMobile ? "14px" : "18px 22px",
               }}
             >
               <div
                 style={{
-                  minWidth: 140,
+                  minWidth: 130,
                   color: "#2563EB",
                   fontWeight: 700,
-                  fontSize: "0.85rem",
-                  paddingTop: 2,
+                  fontSize: "0.78rem",
+                  paddingTop: isMobile ? 0 : 2,
+                  flexShrink: 0,
                 }}
               >
                 {exp.year}
@@ -1132,10 +1562,10 @@ function TentangPage({ darkMode }) {
               <div>
                 <p
                   style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 700,
-                    color: text,
-                    margin: "0 0 4px",
+                    color: th.text,
+                    margin: "0 0 2px",
+                    fontSize: "0.92rem",
                   }}
                 >
                   {exp.role}
@@ -1143,14 +1573,21 @@ function TentangPage({ darkMode }) {
                 <p
                   style={{
                     color: "#2563EB",
-                    fontSize: "0.9rem",
+                    fontSize: "0.82rem",
                     fontWeight: 600,
-                    margin: "0 0 8px",
+                    margin: "0 0 5px",
                   }}
                 >
                   {exp.company}
                 </p>
-                <p style={{ color: muted, fontSize: "0.9rem", margin: 0 }}>
+                <p
+                  style={{
+                    color: th.muted,
+                    fontSize: "0.85rem",
+                    margin: 0,
+                    lineHeight: 1.6,
+                  }}
+                >
                   {exp.desc}
                 </p>
               </div>
@@ -1162,84 +1599,79 @@ function TentangPage({ darkMode }) {
   );
 }
 
+// ===== PORTFOLIO PAGE =====
 function PortfolioPage({ darkMode }) {
-  const bg = darkMode ? "#0f0f0f" : "#ffffff";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
+  const { isMobile, isTablet } = useBreakpoint();
+  const th = t(darkMode);
   const [filter, setFilter] = useState("Semua");
   const tags = ["Semua", "React", "Next.js", "Vue.js", "HTML"];
-
   const filtered =
     filter === "Semua"
       ? PROJECTS
       : PROJECTS.filter((p) => p.tags.includes(filter));
+  const cols = isMobile
+    ? "1fr 1fr"
+    : isTablet
+      ? "repeat(2, 1fr)"
+      : "repeat(3, 1fr)";
 
   return (
-    <div style={{ background: bg, minHeight: "100vh", paddingTop: 80 }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "4rem 1.5rem" }}>
-        <SectionLabel label="Portfolio" darkMode={darkMode} />
+    <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
+        }}
+      >
+        <SectionLabel label="Portfolio" />
         <h1
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 900,
-            fontSize: "2.8rem",
-            color: text,
-            marginTop: 20,
-            marginBottom: 12,
+            fontSize: isMobile ? "1.8rem" : "2.8rem",
+            color: th.text,
+            marginTop: 14,
+            marginBottom: 8,
             letterSpacing: "-1px",
           }}
         >
           Proyek yang Telah Saya Kerjakan
         </h1>
-        <p
-          style={{
-            color: darkMode ? "#94a3b8" : "#475569",
-            marginBottom: 36,
-            fontSize: "1.05rem",
-          }}
-        >
+        <p style={{ color: th.muted, marginBottom: 28, fontSize: "0.9rem" }}>
           Kumpulan proyek nyata dari berbagai domain dan teknologi.
         </p>
 
-        {/* Filter */}
+        {/* Filter chips */}
         <div
           style={{
             display: "flex",
-            gap: 10,
-            marginBottom: 40,
+            gap: 8,
+            marginBottom: 32,
             flexWrap: "wrap",
           }}
         >
-          {tags.map((t) => (
+          {tags.map((tag) => (
             <button
-              key={t}
-              onClick={() => setFilter(t)}
+              key={tag}
+              onClick={() => setFilter(tag)}
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
-                fontSize: "0.9rem",
-                background: filter === t ? "#2563EB" : "transparent",
-                color: filter === t ? "#fff" : darkMode ? "#94a3b8" : "#475569",
-                border:
-                  "2px solid " +
-                  (filter === t ? "#1D4ED8" : darkMode ? "#334155" : "#cbd5e1"),
-                boxShadow: filter === t ? "3px 3px 0 #1D4ED8" : "none",
-                padding: "8px 18px",
+                fontSize: "0.82rem",
+                background: filter === tag ? "#2563EB" : "transparent",
+                color: filter === tag ? "#fff" : th.muted,
+                border: `2px solid ${filter === tag ? "#1D4ED8" : darkMode ? "#334155" : "#cbd5e1"}`,
+                boxShadow: filter === tag ? "3px 3px 0 #1D4ED8" : "none",
+                padding: "6px 14px",
                 cursor: "pointer",
                 transition: "all 0.15s",
               }}
             >
-              {t}
+              {tag}
             </button>
           ))}
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: cols, gap: 18 }}>
           {filtered.map((p) => (
             <ProjectCard key={p.id} project={p} darkMode={darkMode} large />
           ))}
@@ -1249,64 +1681,67 @@ function PortfolioPage({ darkMode }) {
   );
 }
 
+// ===== BLOG PAGE =====
 function BlogPage({ darkMode }) {
-  const bg = darkMode ? "#0f0f0f" : "#ffffff";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
+  const { isMobile } = useBreakpoint();
+  const th = t(darkMode);
 
   return (
-    <div style={{ background: bg, minHeight: "100vh", paddingTop: 80 }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "4rem 1.5rem" }}>
-        <SectionLabel label="Blog" darkMode={darkMode} />
+    <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
+      <div
+        style={{
+          maxWidth: 840,
+          margin: "0 auto",
+          padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
+        }}
+      >
+        <SectionLabel label="Blog" />
         <h1
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 900,
-            fontSize: "2.8rem",
-            color: text,
-            marginTop: 20,
-            marginBottom: 12,
+            fontSize: isMobile ? "1.8rem" : "2.8rem",
+            color: th.text,
+            marginTop: 14,
+            marginBottom: 8,
             letterSpacing: "-1px",
           }}
         >
           Tulisan & Artikel
         </h1>
-        <p style={{ color: muted, marginBottom: 48, fontSize: "1.05rem" }}>
+        <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
           Berbagi pengetahuan, pengalaman, dan insight seputar dunia web
           development.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {BLOGS.map((b) => (
             <article
               key={b.id}
               style={{
-                background: darkMode ? "#111827" : "#f8fafc",
-                border: "2px solid " + (darkMode ? "#1e3a8a" : "#bfdbfe"),
-                boxShadow: darkMode ? "5px 5px 0 #1e3a8a" : "5px 5px 0 #93c5fd",
-                padding: "28px 32px",
+                background: th.bgCard,
+                border: `2px solid ${th.border}`,
+                boxShadow: `5px 5px 0 ${th.shadow}`,
+                padding: isMobile ? "18px" : "26px 30px",
                 cursor: "pointer",
-                transition: "all 0.1s",
+                transition: "transform 0.1s, box-shadow 0.1s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translate(-2px, -2px)";
-                e.currentTarget.style.boxShadow = darkMode
-                  ? "7px 7px 0 #1e3a8a"
-                  : "7px 7px 0 #60a5fa";
+                e.currentTarget.style.transform = "translate(-2px,-2px)";
+                e.currentTarget.style.boxShadow = `7px 7px 0 ${th.shadow}`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translate(0,0)";
-                e.currentTarget.style.boxShadow = darkMode
-                  ? "5px 5px 0 #1e3a8a"
-                  : "5px 5px 0 #93c5fd";
+                e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
               }}
             >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 12,
+                  alignItems: "flex-start",
+                  marginBottom: 10,
+                  flexWrap: "wrap",
+                  gap: 8,
                 }}
               >
                 <span
@@ -1315,37 +1750,43 @@ function BlogPage({ darkMode }) {
                     border: "1.5px solid #2563EB",
                     color: "#1D4ED8",
                     fontWeight: 700,
-                    fontSize: "0.8rem",
-                    padding: "3px 10px",
+                    fontSize: "0.72rem",
+                    padding: "2px 9px",
                   }}
                 >
                   {b.tag}
                 </span>
-                <span style={{ color: muted, fontSize: "0.85rem" }}>
+                <span style={{ color: th.muted, fontSize: "0.75rem" }}>
                   {b.date} · {b.readTime} baca
                 </span>
               </div>
               <h2
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 800,
-                  fontSize: "1.2rem",
-                  color: text,
-                  margin: "0 0 12px",
-                  letterSpacing: "-0.5px",
+                  fontSize: isMobile ? "0.98rem" : "1.1rem",
+                  color: th.text,
+                  margin: "0 0 8px",
+                  letterSpacing: "-0.3px",
                 }}
               >
                 {b.title}
               </h2>
-              <p style={{ color: muted, lineHeight: 1.7, margin: 0 }}>
+              <p
+                style={{
+                  color: th.muted,
+                  lineHeight: 1.7,
+                  margin: 0,
+                  fontSize: "0.88rem",
+                }}
+              >
                 {b.excerpt}
               </p>
               <p
                 style={{
                   color: "#2563EB",
                   fontWeight: 700,
-                  fontSize: "0.9rem",
-                  margin: "16px 0 0",
+                  fontSize: "0.85rem",
+                  margin: "12px 0 0",
                 }}
               >
                 Baca Selengkapnya →
@@ -1358,32 +1799,48 @@ function BlogPage({ darkMode }) {
   );
 }
 
+// ===== KONTAK PAGE =====
 function KontakPage({ darkMode }) {
-  const bg = darkMode ? "#0f0f0f" : "#ffffff";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
-  const border = darkMode ? "#1e3a8a" : "#bfdbfe";
-  const inputBg = darkMode ? "#111827" : "#f8fafc";
+  const { isMobile, isTablet } = useBreakpoint();
+  const th = t(darkMode);
   const [sent, setSent] = useState(false);
+  const isSmall = isMobile || isTablet;
+
+  const inputSt = {
+    width: "100%",
+    padding: "10px 13px",
+    background: th.bgInput,
+    border: `2px solid ${th.border}`,
+    color: th.text,
+    fontSize: "0.9rem",
+    outline: "none",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+  };
 
   return (
-    <div style={{ background: bg, minHeight: "100vh", paddingTop: 80 }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "4rem 1.5rem" }}>
-        <SectionLabel label="Kontak" darkMode={darkMode} />
+    <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
+      <div
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
+        }}
+      >
+        <SectionLabel label="Kontak" />
         <h1
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 900,
-            fontSize: "2.8rem",
-            color: text,
-            marginTop: 20,
-            marginBottom: 12,
+            fontSize: isMobile ? "1.8rem" : "2.8rem",
+            color: th.text,
+            marginTop: 14,
+            marginBottom: 8,
             letterSpacing: "-1px",
           }}
         >
           Mari Berkolaborasi! 🤝
         </h1>
-        <p style={{ color: muted, marginBottom: 48, fontSize: "1.05rem" }}>
+        <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
           Punya proyek menarik? Atau sekadar ingin ngobrol? Saya selalu terbuka
           untuk diskusi dan kesempatan baru.
         </p>
@@ -1391,19 +1848,15 @@ function KontakPage({ darkMode }) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1.4fr",
-            gap: "3rem",
+            gridTemplateColumns: isSmall ? "1fr" : "1fr 1.4fr",
+            gap: isSmall ? "2rem" : "3rem",
           }}
         >
-          {/* Info */}
+          {/* Info column */}
           <div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
-                {
-                  icon: "📧",
-                  label: "Email",
-                  value: "restuanggia@email.com",
-                },
+                { icon: "📧", label: "Email", value: "restuanggia@email.com" },
                 {
                   icon: "📍",
                   label: "Lokasi",
@@ -1415,21 +1868,21 @@ function KontakPage({ darkMode }) {
                 <div
                   key={item.label}
                   style={{
-                    background: inputBg,
-                    border: "2px solid " + border,
-                    padding: "16px 20px",
+                    background: th.bgCard,
+                    border: `2px solid ${th.border}`,
+                    padding: "13px 16px",
                     display: "flex",
-                    gap: 14,
+                    gap: 12,
                     alignItems: "center",
                   }}
                 >
-                  <span style={{ fontSize: "1.4rem" }}>{item.icon}</span>
+                  <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
                   <div>
                     <p
                       style={{
-                        color: muted,
-                        fontSize: "0.8rem",
-                        margin: "0 0 2px",
+                        color: th.muted,
+                        fontSize: "0.7rem",
+                        margin: "0 0 1px",
                         fontWeight: 600,
                         textTransform: "uppercase",
                         letterSpacing: 0.5,
@@ -1439,9 +1892,9 @@ function KontakPage({ darkMode }) {
                     </p>
                     <p
                       style={{
-                        color: text,
+                        color: th.text,
                         fontWeight: 700,
-                        fontSize: "0.95rem",
+                        fontSize: "0.88rem",
                         margin: 0,
                       }}
                     >
@@ -1452,7 +1905,6 @@ function KontakPage({ darkMode }) {
               ))}
             </div>
 
-            {/* WhatsApp CTA */}
             <a
               href="https://wa.me/6281234567890"
               target="_blank"
@@ -1462,29 +1914,25 @@ function KontakPage({ darkMode }) {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 10,
-                marginTop: 20,
+                marginTop: 16,
                 background: "#22c55e",
                 border: "3px solid #0a0a0a",
                 boxShadow: "5px 5px 0 #0a0a0a",
                 color: "#fff",
-                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
-                fontSize: "1rem",
-                padding: "14px",
+                fontSize: "0.92rem",
+                padding: "12px",
                 textDecoration: "none",
-                transition: "all 0.1s",
               }}
             >
-              <span style={{ fontSize: "1.3rem" }}>💬</span>
-              Chat via WhatsApp
+              💬 Chat via WhatsApp
             </a>
 
-            {/* Social Links */}
             <div
               style={{
                 display: "flex",
-                gap: 12,
-                marginTop: 20,
+                gap: 8,
+                marginTop: 14,
                 flexWrap: "wrap",
               }}
             >
@@ -1496,15 +1944,15 @@ function KontakPage({ darkMode }) {
                   rel="noreferrer"
                   style={{
                     background: "transparent",
-                    border: "2px solid " + border,
-                    color: muted,
-                    padding: "8px 16px",
+                    border: `2px solid ${th.border}`,
+                    color: th.muted,
+                    padding: "6px 12px",
                     fontWeight: 700,
-                    fontSize: "0.85rem",
+                    fontSize: "0.78rem",
                     textDecoration: "none",
-                    display: "flex",
+                    display: "inline-flex",
                     alignItems: "center",
-                    gap: 6,
+                    gap: 5,
                     transition: "all 0.15s",
                   }}
                   onMouseEnter={(e) => {
@@ -1514,8 +1962,8 @@ function KontakPage({ darkMode }) {
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = muted;
-                    e.currentTarget.style.borderColor = border;
+                    e.currentTarget.style.color = th.muted;
+                    e.currentTarget.style.borderColor = th.border;
                   }}
                 >
                   {s.icon} {s.label}
@@ -1527,89 +1975,61 @@ function KontakPage({ darkMode }) {
           {/* Form */}
           <div
             style={{
-              background: inputBg,
-              border: "3px solid " + (darkMode ? "#2563EB" : "#1D4ED8"),
-              boxShadow: darkMode ? "8px 8px 0 #1e3a8a" : "8px 8px 0 #1D4ED8",
-              padding: "2rem",
+              background: th.bgCard,
+              border: "3px solid #2563EB",
+              boxShadow: `7px 7px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
+              padding: isMobile ? "1.25rem" : "1.75rem",
             }}
           >
             {sent ? (
-              <div style={{ textAlign: "center", padding: "3rem 0" }}>
-                <div style={{ fontSize: "4rem", marginBottom: 16 }}>🎉</div>
+              <div style={{ textAlign: "center", padding: "2.5rem 0" }}>
+                <div style={{ fontSize: "3rem", marginBottom: 12 }}>🎉</div>
                 <h3
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontWeight: 800,
-                    color: text,
-                    marginBottom: 8,
-                  }}
+                  style={{ fontWeight: 800, color: th.text, marginBottom: 6 }}
                 >
                   Pesan Terkirim!
                 </h3>
-                <p style={{ color: muted }}>
+                <p style={{ color: th.muted, fontSize: "0.9rem" }}>
                   Terima kasih! Saya akan segera menghubungi Anda.
                 </p>
               </div>
             ) : (
               <div
-                style={{ display: "flex", flexDirection: "column", gap: 20 }}
+                style={{ display: "flex", flexDirection: "column", gap: 16 }}
               >
                 <h3
                   style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 800,
-                    fontSize: "1.3rem",
-                    color: text,
+                    fontSize: "1.15rem",
+                    color: th.text,
                     margin: 0,
                   }}
                 >
                   Kirim Pesan
                 </h3>
                 {[
-                  {
-                    label: "Nama Lengkap",
-                    type: "text",
-                    placeholder: "John Doe",
-                  },
-                  {
-                    label: "Email",
-                    type: "email",
-                    placeholder: "john@email.com",
-                  },
-                  {
-                    label: "Subjek",
-                    type: "text",
-                    placeholder: "Kolaborasi Proyek",
-                  },
-                ].map((field) => (
-                  <div key={field.label}>
+                  { label: "Nama Lengkap", type: "text", ph: "John Doe" },
+                  { label: "Email", type: "email", ph: "john@email.com" },
+                  { label: "Subjek", type: "text", ph: "Kolaborasi Proyek" },
+                ].map((f) => (
+                  <div key={f.label}>
                     <label
                       style={{
                         display: "block",
                         fontWeight: 700,
-                        color: text,
-                        fontSize: "0.9rem",
-                        marginBottom: 8,
+                        color: th.text,
+                        fontSize: "0.85rem",
+                        marginBottom: 6,
                       }}
                     >
-                      {field.label}
+                      {f.label}
                     </label>
                     <input
-                      type={field.type}
-                      placeholder={field.placeholder}
-                      style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        background: darkMode ? "#1e293b" : "#fff",
-                        border: "2px solid " + border,
-                        color: text,
-                        fontSize: "0.95rem",
-                        outline: "none",
-                        boxSizing: "border-box",
-                        fontFamily: "inherit",
-                      }}
+                      type={f.type}
+                      placeholder={f.ph}
+                      style={inputSt}
                       onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                      onBlur={(e) => (e.target.style.borderColor = border)}
+                      onBlur={(e) => (e.target.style.borderColor = th.border)}
                     />
                   </div>
                 ))}
@@ -1618,9 +2038,9 @@ function KontakPage({ darkMode }) {
                     style={{
                       display: "block",
                       fontWeight: 700,
-                      color: text,
-                      fontSize: "0.9rem",
-                      marginBottom: 8,
+                      color: th.text,
+                      fontSize: "0.85rem",
+                      marginBottom: 6,
                     }}
                   >
                     Pesan
@@ -1628,43 +2048,25 @@ function KontakPage({ darkMode }) {
                   <textarea
                     rows={5}
                     placeholder="Ceritakan proyek atau kebutuhan Anda..."
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      background: darkMode ? "#1e293b" : "#fff",
-                      border: "2px solid " + border,
-                      color: text,
-                      fontSize: "0.95rem",
-                      outline: "none",
-                      resize: "vertical",
-                      fontFamily: "inherit",
-                      boxSizing: "border-box",
-                    }}
+                    style={{ ...inputSt, resize: "vertical" }}
                     onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) => (e.target.style.borderColor = border)}
+                    onBlur={(e) => (e.target.style.borderColor = th.border)}
                   />
                 </div>
                 <button
                   onClick={() => setSent(true)}
+                  onMouseDown={pressDown}
+                  onMouseUp={pressUp}
                   style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 800,
-                    fontSize: "1rem",
+                    fontSize: "0.92rem",
                     background: "#2563EB",
                     color: "#fff",
                     border: "3px solid #0a0a0a",
                     boxShadow: "5px 5px 0 #0a0a0a",
-                    padding: "14px",
+                    padding: "12px",
                     cursor: "pointer",
                     transition: "all 0.1s",
-                  }}
-                  onMouseDown={(e) => {
-                    e.currentTarget.style.boxShadow = "2px 2px 0 #0a0a0a";
-                    e.currentTarget.style.transform = "translate(3px,3px)";
-                  }}
-                  onMouseUp={(e) => {
-                    e.currentTarget.style.boxShadow = "5px 5px 0 #0a0a0a";
-                    e.currentTarget.style.transform = "translate(0,0)";
                   }}
                 >
                   Kirim Pesan 🚀
@@ -1678,288 +2080,7 @@ function KontakPage({ darkMode }) {
   );
 }
 
-// ===== REUSABLE COMPONENTS =====
-
-function SectionLabel({ label, darkMode }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <div style={{ width: 32, height: 4, background: "#2563EB" }} />
-      <span
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 800,
-          fontSize: "0.8rem",
-          color: "#2563EB",
-          textTransform: "uppercase",
-          letterSpacing: 2,
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
-function ProjectCard({ project, darkMode, large }) {
-  const cardBg = darkMode ? "#111827" : "#f8fafc";
-  const border = darkMode ? "#1e3a8a" : "#bfdbfe";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
-
-  return (
-    <div
-      style={{
-        background: cardBg,
-        border: "2px solid " + border,
-        boxShadow: darkMode ? "5px 5px 0 #1e3a8a" : "5px 5px 0 #93c5fd",
-        overflow: "hidden",
-        cursor: "pointer",
-        transition: "all 0.12s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translate(-3px,-3px)";
-        e.currentTarget.style.boxShadow = darkMode
-          ? "8px 8px 0 #1e3a8a"
-          : "8px 8px 0 #60a5fa";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translate(0,0)";
-        e.currentTarget.style.boxShadow = darkMode
-          ? "5px 5px 0 #1e3a8a"
-          : "5px 5px 0 #93c5fd";
-      }}
-    >
-      {/* Color bar */}
-      <div
-        style={{
-          height: large ? 120 : 80,
-          background: project.color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: large ? "2.5rem" : "1.8rem",
-        }}
-      >
-        💻
-      </div>
-      <div style={{ padding: large ? "20px" : "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 8,
-          }}
-        >
-          <h3
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 800,
-              fontSize: large ? "1.1rem" : "0.95rem",
-              color: text,
-              margin: 0,
-            }}
-          >
-            {project.title}
-          </h3>
-          <span style={{ color: muted, fontSize: "0.75rem", fontWeight: 600 }}>
-            {project.year}
-          </span>
-        </div>
-        {large && (
-          <p
-            style={{
-              color: muted,
-              fontSize: "0.85rem",
-              lineHeight: 1.6,
-              margin: "8px 0",
-            }}
-          >
-            {project.desc}
-          </p>
-        )}
-        <div
-          style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}
-        >
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                background: darkMode ? "#1e3a8a" : "#dbeafe",
-                border: "1px solid " + (darkMode ? "#2563EB" : "#93c5fd"),
-                color: darkMode ? "#93c5fd" : "#1D4ED8",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                padding: "2px 8px",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BlogCard({ blog, darkMode }) {
-  const cardBg = darkMode ? "#111827" : "#f8fafc";
-  const border = darkMode ? "#1e3a8a" : "#bfdbfe";
-  const text = darkMode ? "#f1f5f9" : "#0f172a";
-  const muted = darkMode ? "#94a3b8" : "#475569";
-
-  return (
-    <div
-      style={{
-        background: cardBg,
-        border: "2px solid " + border,
-        boxShadow: darkMode ? "5px 5px 0 #1e3a8a" : "5px 5px 0 #93c5fd",
-        padding: "20px",
-        cursor: "pointer",
-        transition: "all 0.12s",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translate(-3px,-3px)";
-        e.currentTarget.style.boxShadow = darkMode
-          ? "8px 8px 0 #1e3a8a"
-          : "8px 8px 0 #60a5fa";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translate(0,0)";
-        e.currentTarget.style.boxShadow = darkMode
-          ? "5px 5px 0 #1e3a8a"
-          : "5px 5px 0 #93c5fd";
-      }}
-    >
-      <span
-        style={{
-          background: "#dbeafe",
-          border: "1.5px solid #2563EB",
-          color: "#1D4ED8",
-          fontWeight: 700,
-          fontSize: "0.75rem",
-          padding: "2px 10px",
-          alignSelf: "flex-start",
-          marginBottom: 12,
-        }}
-      >
-        {blog.tag}
-      </span>
-      <h3
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 800,
-          fontSize: "1rem",
-          color: text,
-          margin: "0 0 10px",
-          lineHeight: 1.4,
-          flex: 1,
-        }}
-      >
-        {blog.title}
-      </h3>
-      <p
-        style={{
-          color: muted,
-          fontSize: "0.85rem",
-          lineHeight: 1.6,
-          margin: "0 0 16px",
-        }}
-      >
-        {blog.excerpt.slice(0, 80)}...
-      </p>
-      <p style={{ color: muted, fontSize: "0.75rem", margin: 0 }}>
-        {blog.date} · {blog.readTime}
-      </p>
-    </div>
-  );
-}
-
-function ContactCTA({ darkMode, setActivePage }) {
-  const border = darkMode ? "#1e3a8a" : "#1D4ED8";
-
-  return (
-    <div
-      style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        background: "#2563EB",
-        border: "3px solid " + (darkMode ? "#e2e8f0" : "#0a0a0a"),
-        boxShadow: darkMode ? "8px 8px 0 #1e3a8a" : "8px 8px 0 #0a0a0a",
-        padding: "3rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "2rem",
-      }}
-    >
-      <div>
-        <h2
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 900,
-            fontSize: "2rem",
-            color: "#fff",
-            margin: "0 0 12px",
-            letterSpacing: "-1px",
-          }}
-        >
-          Punya Ide Proyek? 💡
-        </h2>
-        <p style={{ color: "#bfdbfe", fontSize: "1rem", margin: 0 }}>
-          Mari wujudkan bersama! Saya siap membantu mewujudkan visi digital
-          Anda.
-        </p>
-      </div>
-      <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-        <a
-          href="https://wa.me/6281234567890"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            background: "#22c55e",
-            border: "3px solid #0a0a0a",
-            boxShadow: "4px 4px 0 #0a0a0a",
-            color: "#fff",
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 800,
-            fontSize: "0.95rem",
-            padding: "12px 22px",
-            textDecoration: "none",
-            cursor: "pointer",
-          }}
-        >
-          💬 WhatsApp
-        </a>
-        <button
-          onClick={() => setActivePage("kontak")}
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 800,
-            fontSize: "0.95rem",
-            background: "#fff",
-            color: "#1D4ED8",
-            border: "3px solid #0a0a0a",
-            boxShadow: "4px 4px 0 #0a0a0a",
-            padding: "12px 22px",
-            cursor: "pointer",
-          }}
-        >
-          Kirim Pesan
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ===== MAIN APP =====
-
+// ===== APP ROOT =====
 export default function App() {
   const [activePage, setActivePage] = useState("beranda");
   const [darkMode, setDarkMode] = useState(false);
@@ -1986,33 +2107,24 @@ export default function App() {
   };
 
   return (
-    <div
-      style={{
-        fontFamily:
-          "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif",
-      }}
-    >
-      {/* Import Google Fonts */}
+    <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
-        body { margin: 0; }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; }
+        input, textarea, button, a { font-family: inherit; }
+        img { max-width: 100%; display: block; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
       `}</style>
-
       <Navbar
         activePage={activePage}
         setActivePage={setActivePage}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
       />
-
-      <main>{renderPage()}</main>
-
+      <main style={{ minHeight: "100vh" }}>{renderPage()}</main>
       <Footer darkMode={darkMode} setActivePage={setActivePage} />
-    </div>
+    </>
   );
 }
