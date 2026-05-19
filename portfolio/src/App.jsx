@@ -39,51 +39,43 @@ const NAV_LINKS = [
 const PROJECTS = [
   {
     id: 1,
-    title: "Dashboard Analitik",
-    desc: "Aplikasi dashboard visualisasi data real-time dengan React dan D3.js.",
-    tags: ["React", "D3.js", "TailwindCSS"],
-    year: "2024",
-    color: "#2563EB",
+    title: "Arroyyan99",
+    desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99.",
+    tags: ["React", "Vite", "Supabase"],
+    year: "2026",
+    color: "#1D4ED8",
   },
   {
     id: 2,
-    title: "E-Commerce Platform",
-    desc: "Platform toko online lengkap dengan fitur keranjang, pembayaran, dan manajemen produk.",
-    tags: ["Next.js", "Prisma", "Stripe"],
-    year: "2024",
+    title: "Sanggar Alam",
+    desc: "Aplikasi berbasis website guna sebagai media promosi dan informasi tentang jasa pembuatan karya seni ukir, pembuatan patung, pembuatan relief, dan taman kolam.",
+    tags: ["Next.js", "TailwindCSS", "API"],
+    year: "2025",
     color: "#1D4ED8",
   },
   {
     id: 3,
-    title: "Sistem Manajemen Kelas",
-    desc: "Aplikasi manajemen kelas online untuk sekolah dengan fitur absensi dan nilai.",
-    tags: ["Vue.js", "Laravel", "MySQL"],
+    title: "Tarowehh",
+    desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
+    tags: ["Vue.js", "JSON Server", "TailwindCSS"],
     year: "2023",
-    color: "#1E40AF",
+    color: "#1D4ED8",
   },
   {
     id: 4,
-    title: "Aplikasi Cuaca",
-    desc: "Aplikasi cuaca dengan tampilan visual menarik menggunakan OpenWeather API.",
-    tags: ["React", "API", "CSS"],
-    year: "2023",
-    color: "#3B82F6",
+    title: "Desa Srimulya Jaya",
+    desc: "Website Desa Srimulya Jaya yang memberikan informasi lengkap tentang desa, termasuk profil, berita, layanan publik, dan kontak penting untuk warga dan pengunjung.",
+    tags: ["Astro", "TailwindCSS", "Vite"],
+    year: "2025",
+    color: "#1D4ED8",
   },
   {
     id: 5,
-    title: "Landing Page SaaS",
-    desc: "Halaman pemasaran untuk produk SaaS dengan animasi smooth dan konversi tinggi.",
-    tags: ["HTML", "TailwindCSS", "GSAP"],
-    year: "2023",
-    color: "#60A5FA",
-  },
-  {
-    id: 6,
-    title: "Blog Platform",
-    desc: "Platform blog dengan fitur markdown editor, komentar, dan kategorisasi artikel.",
-    tags: ["Nuxt.js", "Supabase"],
+    title: "Blog Sanggar Alam",
+    desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam, serta memberikan informasi tentang karya-karya terbaru dan tips-tips seputar dunia seni.",
+    tags: ["HTML", "CSS", "JavaScript"],
     year: "2022",
-    color: "#2563EB",
+    color: "#1D4ED8",
   },
 ];
 
@@ -96,6 +88,7 @@ const BLOGS = [
     date: "15 Mei 2025",
     readTime: "8 menit",
     tag: "React",
+    url: "https://react.dev/reference/react/hooks",
   },
   {
     id: 2,
@@ -105,6 +98,7 @@ const BLOGS = [
     date: "2 Apr 2025",
     readTime: "6 menit",
     tag: "CSS",
+    url: "https://tailwindcss.com/docs",
   },
   {
     id: 3,
@@ -114,6 +108,7 @@ const BLOGS = [
     date: "18 Mar 2025",
     readTime: "10 menit",
     tag: "Git",
+    url: "https://git-scm.com/book/en/v2",
   },
   {
     id: 4,
@@ -123,6 +118,7 @@ const BLOGS = [
     date: "5 Feb 2025",
     readTime: "7 menit",
     tag: "Performance",
+    url: "https://developer.chrome.com/docs/lighthouse",
   },
 ];
 
@@ -136,30 +132,37 @@ const SKILLS = [
 ];
 
 const SOCIALS = [
-  { label: "GitHub", icon: "GH", url: "https://github.com" },
-  { label: "LinkedIn", icon: "in", url: "https://linkedin.com" },
-  { label: "Instagram", icon: "IG", url: "https://instagram.com" },
-  { label: "Twitter", icon: "TW", url: "https://twitter.com" },
+  { label: "GitHub", icon: "GH", url: "https://github.com/restuanggia-del" },
+  {
+    label: "LinkedIn",
+    icon: "in",
+    url: "https://www.linkedin.com/in/restu-anggia-putra-35021728b/",
+  },
+  {
+    label: "Instagram",
+    icon: "IG",
+    url: "https://www.instagram.com/rstanggieee/",
+  },
 ];
 
 const EXPERIENCES = [
   {
-    year: "2024 – Sekarang",
-    role: "Freelance Frontend Developer",
-    company: "Self-Employed",
-    desc: "Mengerjakan berbagai proyek web untuk klien dari berbagai industri, mulai dari landing page hingga aplikasi web kompleks.",
+    year: "Jan 2026 – Sekarang",
+    role: "Doctoral Assistant",
+    company: "Arroyyan99",
+    desc: "Sebagai asisten peneliti di program doktoral, membantu dalam penelitian lanjutan di bidang pendidikan, dan juga membantu menyelesaikan tugas dari mata kuliah yang diambil.",
   },
   {
-    year: "2023 – 2024",
-    role: "Junior Web Developer",
-    company: "PT. Teknologi Maju",
-    desc: "Membangun dan memelihara antarmuka web menggunakan React.js dan TailwindCSS dalam tim agile.",
+    year: "Jan 2024 – Mar 2024",
+    role: "Web Developer",
+    company: "Profesional Private",
+    desc: "Sebagai tutor bimbingan belajar, mulai dari Miscrosoft Office, HTML, CSS, JavaScript, hingga penggunaan git dan github untuk kolaborasi proyek.",
   },
   {
-    year: "2022 – 2023",
-    role: "Intern Frontend Dev",
-    company: "Startup Digital XYZ",
-    desc: "Membantu pengembangan komponen UI dan mempelajari best practices modern web development.",
+    year: "Jan 2021 – Mar 2021",
+    role: "Network Technician Intern",
+    company: "Techno Cell & Service",
+    desc: "Intern sebagai teknisi jaringan, membantu instalasi dan pemeliharaan jaringan komputer untuk klien perusahaan.",
   },
 ];
 
@@ -383,7 +386,10 @@ function ProjectCard({ project, darkMode, large }) {
 function BlogCard({ blog, darkMode }) {
   const th = t(darkMode);
   return (
-    <div
+    <a
+      href={blog.url}
+      target="_blank"
+      rel="noreferrer"
       style={{
         background: th.bgCard,
         border: `2px solid ${th.border}`,
@@ -393,6 +399,7 @@ function BlogCard({ blog, darkMode }) {
         transition: "transform 0.12s, box-shadow 0.12s",
         display: "flex",
         flexDirection: "column",
+        textDecoration: "none",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translate(-3px,-3px)";
@@ -439,10 +446,22 @@ function BlogCard({ blog, darkMode }) {
       >
         {blog.excerpt.slice(0, 80)}…
       </p>
-      <p style={{ color: th.muted, fontSize: "0.7rem", margin: 0 }}>
+      <p style={{ color: th.muted, fontSize: "0.7rem", margin: "0 0 10px" }}>
         {blog.date} · {blog.readTime}
       </p>
-    </div>
+      <span
+        style={{
+          color: "#2563EB",
+          fontWeight: 700,
+          fontSize: "0.78rem",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+        }}
+      >
+        Baca Selengkapnya →
+      </span>
+    </a>
   );
 }
 
@@ -589,9 +608,8 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
               boxShadow: "2px 2px 0 #0a0a0a",
             }}
           >
-            RE
+            RAP
           </span>
-          <span>Restu.</span>
         </button>
 
         {/* Desktop nav */}
@@ -794,9 +812,8 @@ function Footer({ darkMode, setActivePage }) {
                   boxShadow: "2px 2px 0 #2563EB",
                 }}
               >
-                RE
+                RAP
               </span>
-              Restu.
             </div>
             <p
               style={{
@@ -807,8 +824,8 @@ function Footer({ darkMode, setActivePage }) {
                 margin: "0 0 1.25rem",
               }}
             >
-              Frontend Developer yang bersemangat membangun pengalaman web yang
-              menarik dan fungsional.
+              Software Developer yang selalu bersemangat membangun solusi
+              teknologi yang inovatif.
             </p>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {SOCIALS.map((s) => (
@@ -904,8 +921,8 @@ function Footer({ darkMode, setActivePage }) {
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
-                  "restuanggia@email.com",
-                  "Bandar Lampung, Indonesia",
+                  "restuanggia10@email.com",
+                  "Tulang Bawang, Lampung, Indonesia",
                   "Tersedia untuk freelance",
                 ].map((item, i) => (
                   <p
@@ -932,7 +949,8 @@ function Footer({ darkMode, setActivePage }) {
           }}
         >
           <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
-            © 2025 Restu Anggia. Dibuat dengan ❤️ menggunakan React + Vite.
+            © 2025 Restu Anggia Putra. Dibuat dengan ❤️ menggunakan React +
+            Vite.
           </p>
           <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
             Neobrutalism Design
@@ -1036,10 +1054,10 @@ function HomePage({ darkMode, setActivePage }) {
                 paddingBottom: 2,
               }}
             >
-              Restu Anggia
+              Restu Anggia Putra
             </span>
             <br />
-            Frontend Developer 🚀
+            Software Developer 🚀
           </h1>
 
           <p
@@ -1146,8 +1164,8 @@ function HomePage({ darkMode, setActivePage }) {
                   fontSize: "0.92rem",
                 }}
               >
-                Saya adalah seorang Frontend Developer dengan passion besar pada
-                dunia web. Berfokus pada pembuatan antarmuka yang tidak hanya
+                Saya adalah seorang Software Developer dengan passion besar pada
+                dunia teknologi. Berfokus pada pembuatan solusi yang tidak hanya
                 indah secara visual, tapi juga performa tinggi dan aksesibel.
               </p>
               <button
@@ -1375,7 +1393,7 @@ function TentangPage({ darkMode }) {
                 letterSpacing: "-1px",
               }}
             >
-              Restu Anggia
+              Restu Anggia Putra
             </h1>
             <p
               style={{
@@ -1385,7 +1403,7 @@ function TentangPage({ darkMode }) {
                 margin: "0 0 12px",
               }}
             >
-              Frontend Developer & UI Enthusiast
+              Software Developer & Tech Enthusiast
             </p>
             <p
               style={{
@@ -1396,9 +1414,8 @@ function TentangPage({ darkMode }) {
               }}
             >
               Halo! Saya Restu, seorang developer yang suka menciptakan
-              pengalaman digital yang bermakna. Berasal dari Bandar Lampung,
-              Indonesia, saya percaya kode yang baik bukan hanya fungsional tapi
-              juga indah dan mudah dibaca.
+              pengalaman digital yang inovatif. Saya percaya bahwa kode yang
+              baik bukan hanya fungsional tapi juga indah dan mudah dibaca.
             </p>
           </div>
         </div>
@@ -1434,7 +1451,7 @@ function TentangPage({ darkMode }) {
             Perjalanan saya di dunia programming dimulai dari rasa penasaran —
             bagaimana website bisa terlihat indah sekaligus berfungsi dengan
             baik? Pertanyaan itu mendorong saya belajar HTML, CSS, JavaScript,
-            dan akhirnya React.js.
+            dan akhirnya sekarang bisa ke Next.js, Typescript, dll.
           </p>
           <p
             style={{
@@ -1444,9 +1461,9 @@ function TentangPage({ darkMode }) {
               margin: 0,
             }}
           >
-            Di luar coding, saya gemar membaca artikel teknologi, mengeksplor
-            desain antarmuka terbaru, dan berbagi pengetahuan melalui tulisan di
-            blog ini.
+            Di luar coding, saya gemar membaca artikel, buku, mengeksplor desain
+            antarmuka terbaru, dan berbagi pengetahuan melalui tulisan di blog
+            ini.
           </p>
         </div>
 
@@ -1604,7 +1621,7 @@ function PortfolioPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
   const [filter, setFilter] = useState("Semua");
-  const tags = ["Semua", "React", "Next.js", "Vue.js", "HTML"];
+  const tags = ["Semua", "React", "Next.js", "Vue.js", "Astro", "HTML"];
   const filtered =
     filter === "Semua"
       ? PROJECTS
@@ -1638,7 +1655,7 @@ function PortfolioPage({ darkMode }) {
           Proyek yang Telah Saya Kerjakan
         </h1>
         <p style={{ color: th.muted, marginBottom: 28, fontSize: "0.9rem" }}>
-          Kumpulan proyek nyata dari berbagai domain dan teknologi.
+          Kumpulan proyek nyata dari berbagai tugas yang telah dibantu.
         </p>
 
         {/* Filter chips */}
@@ -1709,14 +1726,16 @@ function BlogPage({ darkMode }) {
           Tulisan & Artikel
         </h1>
         <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
-          Berbagi pengetahuan, pengalaman, dan insight seputar dunia web
-          development.
+          Berbagi pengetahuan, pengalaman, dan insight seputar dunia teknologi.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {BLOGS.map((b) => (
-            <article
+            <a
               key={b.id}
+              href={b.url}
+              target="_blank"
+              rel="noreferrer"
               style={{
                 background: th.bgCard,
                 border: `2px solid ${th.border}`,
@@ -1724,6 +1743,8 @@ function BlogPage({ darkMode }) {
                 padding: isMobile ? "18px" : "26px 30px",
                 cursor: "pointer",
                 transition: "transform 0.1s, box-shadow 0.1s",
+                textDecoration: "none",
+                display: "block",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translate(-2px,-2px)";
@@ -1787,11 +1808,14 @@ function BlogPage({ darkMode }) {
                   fontWeight: 700,
                   fontSize: "0.85rem",
                   margin: "12px 0 0",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
                 }}
               >
                 Baca Selengkapnya →
               </p>
-            </article>
+            </a>
           ))}
         </div>
       </div>
@@ -1800,23 +1824,75 @@ function BlogPage({ darkMode }) {
 }
 
 // ===== KONTAK PAGE =====
+// ⚙️  Ganti nomor WA di sini (format internasional tanpa + atau spasi)
+const WA_NUMBER = "6285368750970";
+
 function KontakPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
-  const [sent, setSent] = useState(false);
   const isSmall = isMobile || isTablet;
 
-  const inputSt = {
+  const [form, setForm] = useState({
+    nama: "",
+    email: "",
+    subjek: "",
+    pesan: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [sent, setSent] = useState(false);
+
+  const set = (key) => (e) =>
+    setForm((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const validate = () => {
+    const errs = {};
+    if (!form.nama.trim()) errs.nama = "Nama wajib diisi";
+    if (!form.email.trim()) errs.email = "Email wajib diisi";
+    else if (!/\S+@\S+\.\S+/.test(form.email))
+      errs.email = "Format email tidak valid";
+    if (!form.subjek.trim()) errs.subjek = "Subjek wajib diisi";
+    if (!form.pesan.trim()) errs.pesan = "Pesan wajib diisi";
+    return errs;
+  };
+
+  const handleSend = () => {
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+    setErrors({});
+
+    // Buat template pesan WhatsApp otomatis
+    const template = [
+      `Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.`,
+      ``,
+      `*Nama:* ${form.nama}`,
+      `*Email:* ${form.email}`,
+      `*Subjek:* ${form.subjek}`,
+      ``,
+      `*Pesan:*`,
+      form.pesan,
+      ``,
+      `Ditunggu balasannya ya! 🙏`,
+    ].join("\n");
+
+    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(template)}`;
+    window.open(waUrl, "_blank", "noreferrer");
+    setSent(true);
+  };
+
+  const inputSt = (field) => ({
     width: "100%",
     padding: "10px 13px",
     background: th.bgInput,
-    border: `2px solid ${th.border}`,
+    border: `2px solid ${errors[field] ? "#ef4444" : th.border}`,
     color: th.text,
     fontSize: "0.9rem",
     outline: "none",
     boxSizing: "border-box",
     fontFamily: "inherit",
-  };
+  });
 
   return (
     <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
@@ -1856,14 +1932,22 @@ function KontakPage({ darkMode }) {
           <div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
-                { icon: "📧", label: "Email", value: "restuanggia@email.com" },
+                {
+                  icon: "📧",
+                  label: "Email",
+                  value: "restuanggia10@gmail.com",
+                },
                 {
                   icon: "📍",
                   label: "Lokasi",
-                  value: "Bandar Lampung, Indonesia",
+                  value: "Tulang Bawang, Lampung, Indonesia",
                 },
-                { icon: "⏰", label: "Zona Waktu", value: "WIB (GMT+7)" },
-                { icon: "✅", label: "Status", value: "Tersedia untuk proyek" },
+                { icon: "⏰", label: "Zona Waktu", value: "09:00 – 16:00 WIB" },
+                {
+                  icon: "✅",
+                  label: "Status",
+                  value: "Tersedia untuk freelance",
+                },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -1905,8 +1989,9 @@ function KontakPage({ darkMode }) {
               ))}
             </div>
 
+            {/* WhatsApp langsung (tanpa form — chat kosong dengan salam awal) */}
             <a
-              href="https://wa.me/6281234567890"
+              href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo Restu! 👋 Saya ingin ngobrol sebentar. Ada yang bisa kamu bantu? 😊")}`}
               target="_blank"
               rel="noreferrer"
               style={{
@@ -1985,54 +2070,64 @@ function KontakPage({ darkMode }) {
               <div style={{ textAlign: "center", padding: "2.5rem 0" }}>
                 <div style={{ fontSize: "3rem", marginBottom: 12 }}>🎉</div>
                 <h3
-                  style={{ fontWeight: 800, color: th.text, marginBottom: 6 }}
+                  style={{ fontWeight: 800, color: th.text, marginBottom: 8 }}
                 >
-                  Pesan Terkirim!
+                  WhatsApp Terbuka!
                 </h3>
-                <p style={{ color: th.muted, fontSize: "0.9rem" }}>
-                  Terima kasih! Saya akan segera menghubungi Anda.
+                <p
+                  style={{
+                    color: th.muted,
+                    fontSize: "0.9rem",
+                    lineHeight: 1.7,
+                    marginBottom: 20,
+                  }}
+                >
+                  Pesan kamu sudah disiapkan otomatis di WhatsApp. Tinggal klik{" "}
+                  <strong>Send</strong> untuk mengirimnya ke saya! 🚀
                 </p>
+                <button
+                  onClick={() => {
+                    setSent(false);
+                    setForm({ nama: "", email: "", subjek: "", pesan: "" });
+                  }}
+                  style={{
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                    background: "transparent",
+                    border: "2px solid #2563EB",
+                    color: "#2563EB",
+                    padding: "9px 20px",
+                    cursor: "pointer",
+                    boxShadow: "3px 3px 0 #2563EB",
+                  }}
+                >
+                  Kirim Pesan Lain
+                </button>
               </div>
             ) : (
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 16 }}
               >
-                <h3
-                  style={{
-                    fontWeight: 800,
-                    fontSize: "1.15rem",
-                    color: th.text,
-                    margin: 0,
-                  }}
-                >
-                  Kirim Pesan
-                </h3>
-                {[
-                  { label: "Nama Lengkap", type: "text", ph: "John Doe" },
-                  { label: "Email", type: "email", ph: "john@email.com" },
-                  { label: "Subjek", type: "text", ph: "Kolaborasi Proyek" },
-                ].map((f) => (
-                  <div key={f.label}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontWeight: 700,
-                        color: th.text,
-                        fontSize: "0.85rem",
-                        marginBottom: 6,
-                      }}
-                    >
-                      {f.label}
-                    </label>
-                    <input
-                      type={f.type}
-                      placeholder={f.ph}
-                      style={inputSt}
-                      onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                      onBlur={(e) => (e.target.style.borderColor = th.border)}
-                    />
-                  </div>
-                ))}
+                <div>
+                  <h3
+                    style={{
+                      fontWeight: 800,
+                      fontSize: "1.15rem",
+                      color: th.text,
+                      margin: "0 0 4px",
+                    }}
+                  >
+                    Kirim Pesan via WhatsApp
+                  </h3>
+                  <p
+                    style={{ color: th.muted, fontSize: "0.78rem", margin: 0 }}
+                  >
+                    Isi form di bawah → pesan dikirim langsung ke WhatsApp saya
+                    📱
+                  </p>
+                </div>
+
+                {/* Nama */}
                 <div>
                   <label
                     style={{
@@ -2043,34 +2138,217 @@ function KontakPage({ darkMode }) {
                       marginBottom: 6,
                     }}
                   >
-                    Pesan
+                    Nama Lengkap *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Restu Anggia"
+                    value={form.nama}
+                    onChange={set("nama")}
+                    style={inputSt("nama")}
+                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = errors.nama
+                        ? "#ef4444"
+                        : th.border)
+                    }
+                  />
+                  {errors.nama && (
+                    <p
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      ⚠ {errors.nama}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontWeight: 700,
+                      color: th.text,
+                      fontSize: "0.85rem",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="restu@email.com"
+                    value={form.email}
+                    onChange={set("email")}
+                    style={inputSt("email")}
+                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = errors.email
+                        ? "#ef4444"
+                        : th.border)
+                    }
+                  />
+                  {errors.email && (
+                    <p
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      ⚠ {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                {/* Subjek */}
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontWeight: 700,
+                      color: th.text,
+                      fontSize: "0.85rem",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Subjek *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Kolaborasi Proyek"
+                    value={form.subjek}
+                    onChange={set("subjek")}
+                    style={inputSt("subjek")}
+                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = errors.subjek
+                        ? "#ef4444"
+                        : th.border)
+                    }
+                  />
+                  {errors.subjek && (
+                    <p
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      ⚠ {errors.subjek}
+                    </p>
+                  )}
+                </div>
+
+                {/* Pesan */}
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontWeight: 700,
+                      color: th.text,
+                      fontSize: "0.85rem",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Pesan *
                   </label>
                   <textarea
                     rows={5}
                     placeholder="Ceritakan proyek atau kebutuhan Anda..."
-                    style={{ ...inputSt, resize: "vertical" }}
+                    value={form.pesan}
+                    onChange={set("pesan")}
+                    style={{ ...inputSt("pesan"), resize: "vertical" }}
                     onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) => (e.target.style.borderColor = th.border)}
+                    onBlur={(e) =>
+                      (e.target.style.borderColor = errors.pesan
+                        ? "#ef4444"
+                        : th.border)
+                    }
                   />
+                  {errors.pesan && (
+                    <p
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      ⚠ {errors.pesan}
+                    </p>
+                  )}
                 </div>
+
+                {/* Preview template */}
+                {(form.nama || form.pesan) && (
+                  <div
+                    style={{
+                      background: darkMode ? "#1e293b" : "#f0fdf4",
+                      border: "1.5px dashed #22c55e",
+                      padding: "12px 14px",
+                      fontSize: "0.75rem",
+                      color: th.muted,
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontWeight: 700,
+                        color: "#22c55e",
+                        margin: "0 0 4px",
+                      }}
+                    >
+                      📋 Preview pesan WA:
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {`Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.\n\n*Nama:* ${form.nama || "…"}\n*Email:* ${form.email || "…"}\n*Subjek:* ${form.subjek || "…"}\n\n*Pesan:*\n${form.pesan || "…"}`}
+                    </p>
+                  </div>
+                )}
+
                 <button
-                  onClick={() => setSent(true)}
+                  onClick={handleSend}
                   onMouseDown={pressDown}
                   onMouseUp={pressUp}
                   style={{
                     fontWeight: 800,
                     fontSize: "0.92rem",
-                    background: "#2563EB",
+                    background: "#22c55e",
                     color: "#fff",
                     border: "3px solid #0a0a0a",
                     boxShadow: "5px 5px 0 #0a0a0a",
                     padding: "12px",
                     cursor: "pointer",
                     transition: "all 0.1s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                   }}
                 >
-                  Kirim Pesan 🚀
+                  💬 Kirim ke WhatsApp
                 </button>
+
+                <p
+                  style={{
+                    color: th.muted,
+                    fontSize: "0.75rem",
+                    textAlign: "center",
+                    margin: 0,
+                  }}
+                >
+                  Pesan akan dibuka di WhatsApp secara otomatis ✓
+                </p>
               </div>
             )}
           </div>
