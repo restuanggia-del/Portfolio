@@ -1030,18 +1030,19 @@ function HomePage({ darkMode, setActivePage }) {
         }}
       >
         {!isMobile && (
-          <div
+          <img
+            src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I2aXVpOGd3eHoxY3oxZTczOWF6anhqNDh1eHB5NDd4eXk3OHR5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vcdbi5o470i9FACaZO/giphy.gif"
+            alt="coding gif"
             style={{
               position: "absolute",
-              top: 80,
-              right: isTablet ? 30 : 80,
-              width: isTablet ? 140 : 200,
-              height: isTablet ? 140 : 200,
-              background: "#2563EB",
+              top: isTablet ? 100 : 100,
+              right: isTablet ? 35 : 70,
+              width: isTablet ? 140 : 220,
+              height: isTablet ? 90 : 180,
               border: "4px solid #0a0a0a",
               boxShadow: `8px 8px 0 ${th.shadow}`,
               zIndex: 0,
-              opacity: 0.1,
+              objectFit: "cover",
             }}
           />
         )}
