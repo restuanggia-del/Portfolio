@@ -82,43 +82,85 @@ const PROJECTS = [
 const BLOGS = [
   {
     id: 1,
-    title: "Memahami React Hooks: useState dan useEffect",
+    title:
+      "Github Copilot: Asisten Kode AI yang Mengubah Cara Kita Menulis Kode",
     excerpt:
-      "Panduan lengkap memahami dua hooks paling fundamental di React yang wajib dikuasai setiap developer.",
-    date: "15 Mei 2025",
-    readTime: "8 menit",
-    tag: "React",
-    url: "https://react.dev/reference/react/hooks",
+      "Ngoding jadi lebih mudah dengan Github Copilot, asisten kode berbasis AI yang membantu menulis kode lebih cepat dan efisien. Pelajari cara memanfaatkannya dalam proyek Anda.",
+    date: "10 Mei 2026",
+    readTime: "11 menit",
+    tag: "Github Copilot",
+    url: "https://copilot.github.com",
   },
   {
     id: 2,
-    title: "TailwindCSS vs CSS Biasa: Mana yang Lebih Baik?",
+    title: "DaisyUI: Komponen TailwindCSS yang Mempercepat Pengembangan",
     excerpt:
-      "Perbandingan mendalam antara TailwindCSS dengan CSS konvensional dari sisi produktivitas.",
-    date: "2 Apr 2025",
-    readTime: "6 menit",
-    tag: "CSS",
-    url: "https://tailwindcss.com/docs",
+      "Panduan lengkap memulai DaisyUI, pustaka komponen berbasis TailwindCSS yang mempercepat pengembangan antarmuka pengguna dengan desain yang konsisten.",
+    date: "25 Apr 2026",
+    readTime: "11 menit",
+    tag: "DaisyUI",
+    url: "https://daisyui.com",
   },
   {
     id: 3,
-    title: "Belajar Git dari Nol: Panduan untuk Pemula",
+    title:
+      "Figma untuk Desainer UI/UX: Panduan Lengkap Memulai desain kita di Figma",
     excerpt:
-      "Langkah demi langkah mempelajari Git mulai dari instalasi hingga workflow kolaborasi tim.",
-    date: "18 Mar 2025",
-    readTime: "10 menit",
-    tag: "Git",
-    url: "https://git-scm.com/book/en/v2",
+      "Panduan lengkap memulai Figma, alat desain digital yang populer untuk membuat antarmuka pengguna dan prototipe.",
+    date: "18 Apr 2026",
+    readTime: "9 menit",
+    tag: "Figma",
+    url: "https://www.figma.com",
   },
   {
     id: 4,
-    title: "Optimasi Performa Web dengan Lighthouse",
+    title: "Vue.js: Framework JavaScript yang Mudah Dipelajari untuk Pemula",
     excerpt:
-      "Teknik-teknik praktis meningkatkan skor Lighthouse dan membuat website kamu jauh lebih cepat.",
-    date: "5 Feb 2025",
-    readTime: "7 menit",
-    tag: "Performance",
-    url: "https://developer.chrome.com/docs/lighthouse",
+      "Panduan lengkap memulai Vue.js, framework JavaScript progresif yang mudah dipelajari untuk membangun antarmuka pengguna yang interaktif.",
+    date: "10 Mar 2026",
+    readTime: "14 menit",
+    tag: "Vue",
+    url: "https://vuejs.org",
+  },
+  {
+    id: 5,
+    title: "Belajar Git dari Nol: Panduan untuk Pemula",
+    excerpt:
+      "Panduan lengkap memulai Git, sistem kontrol versi yang wajib dikuasai setiap developer untuk kolaborasi proyek dan manajemen kode yang efisien.",
+    date: "15 Feb 2026",
+    readTime: "10 menit",
+    tag: "Git",
+    url: "https://git-scm.com",
+  },
+  {
+    id: 6,
+    title: "TailwindCSS vs CSS Biasa: Mana yang Lebih Baik?",
+    excerpt:
+      "Perbandingan mendalam antara TailwindCSS dengan CSS konvensional dari sisi produktivitas.",
+    date: "5 Feb 2026",
+    readTime: "9 menit",
+    tag: "CSS",
+    url: "https://tailwindcss.com",
+  },
+  {
+    id: 7,
+    title: "Belajar Next.js: Framework React untuk Pengembangan Web Modern",
+    excerpt:
+      "Tutorial praktis memulai Next.js, framework React yang powerful untuk membangun aplikasi web dengan performa tinggi dan SEO-friendly.",
+    date: "20 Jan 2026",
+    readTime: "10 menit",
+    tag: "Next",
+    url: "https://nextjs.org",
+  },
+  {
+    id: 8,
+    title: "Memahami React Hooks: useState dan useEffect",
+    excerpt:
+      "Panduan lengkap memahami dua hooks paling fundamental di React yang wajib dikuasai setiap developer.",
+    date: "11 Jan 2026",
+    readTime: "8 menit",
+    tag: "React",
+    url: "https://react.dev",
   },
 ];
 
@@ -162,7 +204,7 @@ const EXPERIENCES = [
     year: "Jan 2021 – Mar 2021",
     role: "Network Technician Intern",
     company: "Techno Cell & Service",
-    desc: "Intern sebagai teknisi jaringan, membantu instalasi dan pemeliharaan jaringan komputer untuk klien perusahaan.",
+    desc: "Magang sebagai teknisi jaringan, membantu instalasi dan pemeliharaan jaringan komputer untuk klien perusahaan.",
   },
 ];
 
@@ -923,7 +965,7 @@ function Footer({ darkMode, setActivePage }) {
                 {[
                   "restuanggia10@email.com",
                   "Tulang Bawang, Lampung, Indonesia",
-                  "Tersedia untuk freelance",
+                  "Tersedia untuk freelance 😃",
                 ].map((item, i) => (
                   <p
                     key={i}
@@ -949,8 +991,8 @@ function Footer({ darkMode, setActivePage }) {
           }}
         >
           <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
-            © 2025 Restu Anggia Putra. Dibuat dengan ❤️ menggunakan React +
-            Vite.
+            © 2025 Restu Anggia Putra. Dibuat dengan sepenuh ❤️ menggunakan
+            React + Vite.
           </p>
           <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
             Neobrutalism Design
@@ -1069,8 +1111,10 @@ function HomePage({ darkMode, setActivePage }) {
               marginBottom: 32,
             }}
           >
-            Saya membangun antarmuka web yang indah, cepat, dan mudah digunakan.
-            Dengan menggunakan design by custom dan bebas request.
+            Saya suka membangun website yang modern, cepat, dan user-friendly
+            dengan teknologi terkini. Desainnya bisa custom sesuai keinginan,
+            bebas request, dan disesuaikan dengan kebutuhan bisnis maupun
+            personal.
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -1313,9 +1357,14 @@ function HomePage({ darkMode, setActivePage }) {
             </h2>
           </div>
           <div
-            style={{ display: "grid", gridTemplateColumns: projCols, gap: 14 }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: projCols,
+              gap: 14,
+              gridAutoRows: "1fr",
+            }}
           >
-            {BLOGS.map((b) => (
+            {BLOGS.slice(0, 4).map((b) => (
               <BlogCard key={b.id} blog={b} darkMode={darkMode} />
             ))}
           </div>
@@ -1447,10 +1496,13 @@ function TentangPage({ darkMode }) {
               fontSize: "0.9rem",
             }}
           >
-            Perjalanan saya di dunia programming dimulai dari rasa penasaran —
-            bagaimana website bisa terlihat indah sekaligus berfungsi dengan
-            baik? Pertanyaan itu mendorong saya belajar HTML, CSS, JavaScript,
-            dan akhirnya sekarang bisa ke Next.js, Typescript, dll.
+            Perjalanan saya di dunia teknologi dimulai dari rasa penasaran
+            tentang bagaimana perkembangan Teknologi dapat mengubah cara manusia
+            bekerja, belajar, dan berinteraksi. Rasa ingin tahu tersebut
+            mendorong saya untuk mempelajari semuanya dari dasar, mulai dari
+            fundamental programming, berbagai bahasa pemrograman, desain
+            antarmuka, hingga teknologi modern yang digunakan untuk membangun
+            website dan aplikasi.
           </p>
           <p
             style={{
@@ -1460,9 +1512,11 @@ function TentangPage({ darkMode }) {
               margin: 0,
             }}
           >
-            Di luar coding, saya gemar membaca artikel, buku, mengeksplor desain
-            antarmuka terbaru, dan berbagi pengetahuan melalui tulisan di blog
-            ini.
+            Di luar aktivitas coding, saya gemar membaca artikel, buku, serta
+            mengikuti perkembangan terbaru di dunia software development, user
+            interface design, dan inovasi digital. Saya juga senang mengeksplor
+            tren desain modern dan terus belajar hal-hal baru untuk meningkatkan
+            kualitas karya yang saya bangun.
           </p>
         </div>
 
