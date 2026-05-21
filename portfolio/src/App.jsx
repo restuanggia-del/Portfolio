@@ -1281,6 +1281,8 @@ function HomePage({ darkMode, setActivePage }) {
             style={{
               animation: "fadeInUp 0.7s ease 0.7s both",
               display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               gap: isMobile ? 20 : 36,
               marginTop: 44,
               paddingTop: 32,
