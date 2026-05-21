@@ -27,6 +27,71 @@ function useBreakpoint() {
   return bp;
 }
 
+// ===== TYPING HOOK =====
+function useTyping(words, speed = 80, pause = 1800) {
+  const [displayed, setDisplayed] = useState("");
+  const [wordIdx, setWordIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = words[wordIdx];
+    let delay = deleting ? speed / 2 : speed;
+    if (!deleting && charIdx === current.length) delay = pause;
+    else if (deleting && charIdx === 0) {
+      setDeleting(false);
+      setWordIdx((i) => (i + 1) % words.length);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDisplayed(current.slice(0, charIdx + (deleting ? -1 : 1)));
+      setCharIdx((i) => i + (deleting ? -1 : 1));
+      if (!deleting && charIdx + 1 === current.length)
+        setTimeout(() => setDeleting(true), pause);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [charIdx, deleting, wordIdx, words, speed, pause]);
+
+  return displayed;
+}
+
+// ===== SCROLL REVEAL HOOK =====
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll("[data-reveal]");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+function Reveal({ children, delay = 0, style: extra = {} }) {
+  return (
+    <div
+      data-reveal
+      style={{
+        opacity: 0,
+        transform: "translateY(32px)",
+        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+        ...extra,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 // ===== DATA =====
 const NAV_LINKS = [
   { id: "beranda", label: "Beranda" },
@@ -85,7 +150,7 @@ const BLOGS = [
     title:
       "Github Copilot: Asisten Kode AI yang Mengubah Cara Kita Menulis Kode",
     excerpt:
-      "Ngoding jadi lebih mudah dengan Github Copilot, asisten kode berbasis AI yang membantu menulis kode lebih cepat dan efisien. Pelajari cara memanfaatkannya dalam proyek Anda.",
+      "Ngoding jadi lebih mudah dengan Github Copilot, asisten kode berbasis AI yang membantu menulis kode lebih cepat dan efisien.",
     date: "10 Mei 2026",
     readTime: "11 menit",
     tag: "Github Copilot",
@@ -95,7 +160,7 @@ const BLOGS = [
     id: 2,
     title: "DaisyUI: Komponen TailwindCSS yang Mempercepat Pengembangan",
     excerpt:
-      "Panduan lengkap memulai DaisyUI, pustaka komponen berbasis TailwindCSS yang mempercepat pengembangan antarmuka pengguna dengan desain yang konsisten.",
+      "Panduan lengkap memulai DaisyUI, pustaka komponen berbasis TailwindCSS yang mempercepat pengembangan antarmuka pengguna.",
     date: "25 Apr 2026",
     readTime: "11 menit",
     tag: "DaisyUI",
@@ -126,7 +191,7 @@ const BLOGS = [
     id: 5,
     title: "Belajar Git dari Nol: Panduan untuk Pemula",
     excerpt:
-      "Panduan lengkap memulai Git, sistem kontrol versi yang wajib dikuasai setiap developer untuk kolaborasi proyek dan manajemen kode yang efisien.",
+      "Panduan lengkap memulai Git, sistem kontrol versi yang wajib dikuasai setiap developer untuk kolaborasi proyek dan manajemen kode.",
     date: "15 Feb 2026",
     readTime: "10 menit",
     tag: "Git",
@@ -198,7 +263,7 @@ const EXPERIENCES = [
     year: "Jan 2024 – Mar 2024",
     role: "Web Developer",
     company: "Profesional Private",
-    desc: "Sebagai tutor bimbingan belajar, mulai dari Miscrosoft Office, HTML, CSS, JavaScript, hingga penggunaan git dan github untuk kolaborasi proyek.",
+    desc: "Sebagai tutor bimbingan belajar, mulai dari Microsoft Office, HTML, CSS, JavaScript, hingga penggunaan git dan github untuk kolaborasi proyek.",
   },
   {
     year: "Jan 2021 – Mar 2021",
@@ -207,6 +272,8 @@ const EXPERIENCES = [
     desc: "Magang sebagai teknisi jaringan, membantu instalasi dan pemeliharaan jaringan komputer untuk klien perusahaan.",
   },
 ];
+
+const WA_NUMBER = "6285368750970";
 
 // ===== THEME =====
 const t = (dark) => ({
@@ -349,6 +416,7 @@ function ProjectCard({ project, darkMode, large }) {
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.12s, box-shadow 0.12s",
+        height: "100%",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translate(-3px,-3px)";
@@ -442,6 +510,7 @@ function BlogCard({ blog, darkMode }) {
         display: "flex",
         flexDirection: "column",
         textDecoration: "none",
+        height: "100%",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translate(-3px,-3px)";
@@ -543,7 +612,7 @@ function ContactCTA({ darkMode, setActivePage }) {
       </div>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
         <a
-          href="https://wa.me/6285368750970"
+          href={`https://wa.me/${WA_NUMBER}`}
           target="_blank"
           rel="noreferrer"
           onMouseDown={pressDown}
@@ -594,7 +663,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const th = t(darkMode);
   const isSmall = isMobile || isTablet;
-
   const navigate = (id) => {
     setActivePage(id);
     setMenuOpen(false);
@@ -624,7 +692,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
           height: 62,
         }}
       >
-        {/* Logo */}
         <button
           onClick={() => navigate("beranda")}
           style={{
@@ -654,7 +721,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
           </span>
         </button>
 
-        {/* Desktop nav */}
         {!isSmall && (
           <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
             {NAV_LINKS.map((link) => (
@@ -704,7 +770,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
           </div>
         )}
 
-        {/* Mobile controls */}
         {isSmall && (
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -765,7 +830,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
         )}
       </div>
 
-      {/* Mobile dropdown */}
       {isSmall && menuOpen && (
         <div
           style={{
@@ -833,7 +897,14 @@ function Footer({ darkMode, setActivePage }) {
             marginBottom: "2.5rem",
           }}
         >
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
             <div
               style={{
                 fontWeight: 900,
@@ -841,6 +912,7 @@ function Footer({ darkMode, setActivePage }) {
                 color: "#fff",
                 marginBottom: 12,
                 display: "flex",
+                justifyContent: "center",
                 alignItems: "center",
                 gap: 10,
               }}
@@ -857,6 +929,7 @@ function Footer({ darkMode, setActivePage }) {
                 RAP
               </span>
             </div>
+
             <p
               style={{
                 color: muted,
@@ -864,12 +937,21 @@ function Footer({ darkMode, setActivePage }) {
                 maxWidth: 280,
                 fontSize: "0.88rem",
                 margin: "0 0 1.25rem",
+                textAlign: "center",
               }}
             >
               Software Developer yang selalu bersemangat membangun solusi
               teknologi yang inovatif.
             </p>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
@@ -935,6 +1017,9 @@ function Footer({ darkMode, setActivePage }) {
                     fontSize: "0.88rem",
                     padding: 0,
                     transition: "color 0.15s",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.color = "#2563EB")
@@ -947,36 +1032,34 @@ function Footer({ darkMode, setActivePage }) {
             </div>
           </div>
 
-          {!isMobile && (
-            <div>
-              <p
-                style={{
-                  fontWeight: 700,
-                  color: "#fff",
-                  marginBottom: 14,
-                  textTransform: "uppercase",
-                  letterSpacing: 1,
-                  fontSize: "0.75rem",
-                }}
-              >
-                Kontak
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {[
-                  "restuanggia10@email.com",
-                  "Tulang Bawang, Lampung, Indonesia",
-                  "Tersedia untuk freelance 😃",
-                ].map((item, i) => (
-                  <p
-                    key={i}
-                    style={{ color: muted, fontSize: "0.85rem", margin: 0 }}
-                  >
-                    {item}
-                  </p>
-                ))}
-              </div>
+          <div>
+            <p
+              style={{
+                fontWeight: 700,
+                color: "#fff",
+                marginBottom: 14,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontSize: "0.75rem",
+              }}
+            >
+              Kontak
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                "restuanggia10@gmail.com",
+                "Tulang Bawang, Lampung, Indonesia",
+                "Tersedia untuk freelance 😃",
+              ].map((item, i) => (
+                <p
+                  key={i}
+                  style={{ color: muted, fontSize: "0.85rem", margin: 0 }}
+                >
+                  {item}
+                </p>
+              ))}
             </div>
-          )}
+          </div>
         </div>
 
         <div
@@ -994,7 +1077,7 @@ function Footer({ darkMode, setActivePage }) {
             © 2025 Restu Anggia Putra. Dibuat dengan sepenuh ❤️ menggunakan
             React + Vite.
           </p>
-          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
+          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0,  }}>
             Neobrutalism Design
           </p>
         </div>
@@ -1014,6 +1097,18 @@ function HomePage({ darkMode, setActivePage }) {
       ? "1fr 1fr"
       : "repeat(4, 1fr)";
 
+  const typedText = useTyping(
+    [
+      "Software Developer 🚀",
+      "Computer Science ⚡",
+      "Designer 🎨",
+      "Freelancer ✏️",
+    ],
+    75,
+    1800,
+  );
+  useScrollReveal();
+
   return (
     <div style={{ background: th.bg }}>
       {/* HERO */}
@@ -1029,6 +1124,7 @@ function HomePage({ darkMode, setActivePage }) {
           position: "relative",
         }}
       >
+        {/* GIF — absolute di desktop/tablet, hidden di mobile (muncul inline di bawah) */}
         {!isMobile && (
           <img
             src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I2aXVpOGd3eHoxY3oxZTczOWF6anhqNDh1eHB5NDd4eXk3OHR5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vcdbi5o470i9FACaZO/giphy.gif"
@@ -1043,82 +1139,136 @@ function HomePage({ darkMode, setActivePage }) {
               boxShadow: `8px 8px 0 ${th.shadow}`,
               zIndex: 0,
               objectFit: "cover",
+              animation: "fadeInDown 0.8s ease both",
             }}
           />
         )}
+
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#dbeafe",
-              border: "2px solid #2563EB",
-              boxShadow: "4px 4px 0 #1D4ED8",
-              padding: "5px 14px",
-              marginBottom: 24,
-            }}
-          >
-            <span
+          <div style={{ animation: "fadeInDown 0.6s ease 0.1s both" }}>
+            <div
               style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#22c55e",
-                animation: "pulse 2s infinite",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "#dbeafe",
+                border: "2px solid #2563EB",
+                boxShadow: "4px 4px 0 #1D4ED8",
+                padding: "5px 14px",
+                marginBottom: 16,
               }}
-            />
-            <span
-              style={{ fontWeight: 600, color: "#1D4ED8", fontSize: "0.82rem" }}
             >
-              Tersedia untuk Proyek Baru
-            </span>
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#22c55e",
+                  animation: "pulse 2s infinite",
+                }}
+              />
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: "#1D4ED8",
+                  fontSize: "0.82rem",
+                }}
+              >
+                Tersedia untuk Proyek Baru
+              </span>
+            </div>
           </div>
 
-          <h1
-            style={{
-              fontWeight: 900,
-              fontSize: isMobile
-                ? "2rem"
-                : isTablet
-                  ? "2.8rem"
-                  : "clamp(2.8rem,5vw,4.2rem)",
-              color: th.text,
-              lineHeight: 1.08,
-              marginBottom: 18,
-              letterSpacing: "-2px",
-            }}
-          >
-            Halo, Saya{" "}
-            <span
+          {/* GIF khusus mobile — muncul di bawah badge */}
+          {isMobile && (
+            <div
               style={{
-                color: "#2563EB",
-                borderBottom: "5px solid #2563EB",
-                paddingBottom: 2,
+                animation: "fadeInDown 0.7s ease 0.2s both",
+                marginBottom: 20,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              Restu Anggia Putra
-            </span>
-            <br />
-            Software Developer 🚀
-          </h1>
+              <img
+                src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I2aXVpOGd3eHoxY3oxZTczOWF6anhqNDh1eHB5NDd4eXk3OHR5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vcdbi5o470i9FACaZO/giphy.gif"
+                alt="coding gif"
+                style={{
+                  width: isMobile ? 180 : 240,
+                  height: "auto",
+                  border: "3px solid #0a0a0a",
+                  boxShadow: `5px 5px 0 ${th.shadow}`,
+                  objectFit: "contain",
+                  borderRadius: 0,
+                }}
+              />
+            </div>
+          )}
 
-          <p
+          <div style={{ animation: "fadeInUp 0.7s ease 0.25s both" }}>
+            <h1
+              style={{
+                fontWeight: 900,
+                fontSize: isMobile
+                  ? "2rem"
+                  : isTablet
+                    ? "2.8rem"
+                    : "clamp(2.8rem,5vw,4.2rem)",
+                color: th.text,
+                lineHeight: 1.08,
+                marginBottom: 18,
+                letterSpacing: "-2px",
+              }}
+            >
+              Halo, Saya{" "}
+              <span
+                style={{
+                  color: "#2563EB",
+                  borderBottom: "5px solid #2563EB",
+                  paddingBottom: 2,
+                }}
+              >
+                Restu Anggia Putra
+              </span>
+              <br />
+              <span>{typedText}</span>
+              <span
+                style={{
+                  animation: "blink 1s step-end infinite",
+                  color: "#2563EB",
+                  fontWeight: 900,
+                }}
+              >
+                |
+              </span>
+            </h1>
+          </div>
+
+          <div style={{ animation: "fadeInUp 0.7s ease 0.4s both" }}>
+            <p
+              style={{
+                fontSize: isMobile ? "0.92rem" : "1.05rem",
+                color: th.muted,
+                maxWidth: 540,
+                lineHeight: 1.8,
+                marginBottom: 32,
+              }}
+            >
+              Saya suka membangun website yang modern, cepat, dan user-friendly
+              dengan teknologi terkini. Desainnya bisa custom sesuai keinginan,
+              bebas request, dan disesuaikan dengan kebutuhan bisnis maupun
+              personal.
+            </p>
+          </div>
+
+          <div
             style={{
-              fontSize: isMobile ? "0.92rem" : "1.05rem",
-              color: th.muted,
-              maxWidth: 540,
-              lineHeight: 1.8,
-              marginBottom: 32,
+              animation: "fadeInUp 0.7s ease 0.55s both",
+              display: "flex",
+              gap: 12,
+              flexWrap: "wrap",
             }}
           >
-            Saya suka membangun website yang modern, cepat, dan user-friendly
-            dengan teknologi terkini. Desainnya bisa custom sesuai keinginan,
-            bebas request, dan disesuaikan dengan kebutuhan bisnis maupun
-            personal.
-          </p>
-
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <PrimaryBtn onClick={() => setActivePage("portfolio")}>
               Lihat Portfolio →
             </PrimaryBtn>
@@ -1129,6 +1279,7 @@ function HomePage({ darkMode, setActivePage }) {
 
           <div
             style={{
+              animation: "fadeInUp 0.7s ease 0.7s both",
               display: "flex",
               gap: isMobile ? 20 : 36,
               marginTop: 44,
@@ -1178,7 +1329,9 @@ function HomePage({ darkMode, setActivePage }) {
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Tentang Saya" />
+          <Reveal>
+            <SectionLabel label="Tentang Saya" />
+          </Reveal>
           <div
             style={{
               display: "grid",
@@ -1188,101 +1341,106 @@ function HomePage({ darkMode, setActivePage }) {
               marginTop: 32,
             }}
           >
-            <div>
-              <h2
-                style={{
-                  fontWeight: 800,
-                  fontSize: isMobile ? "1.4rem" : "1.9rem",
-                  color: th.text,
-                  marginBottom: 14,
-                  letterSpacing: "-0.5px",
-                }}
-              >
-                Developer yang suka kerapian kode dan keindahan UI
-              </h2>
-              <p
-                style={{
-                  color: th.muted,
-                  lineHeight: 1.8,
-                  marginBottom: 20,
-                  fontSize: "0.92rem",
-                }}
-              >
-                Saya adalah seorang Software Developer dengan passion besar pada
-                dunia teknologi. Berfokus pada pembuatan solusi yang tidak hanya
-                indah secara visual, tapi juga performa tinggi dan aksesibel.
-              </p>
-              <button
-                onClick={() => setActivePage("tentang")}
-                style={{
-                  fontWeight: 700,
-                  background: "transparent",
-                  border: "2px solid #2563EB",
-                  color: "#2563EB",
-                  padding: "9px 20px",
-                  cursor: "pointer",
-                  boxShadow: "4px 4px 0 #2563EB",
-                  fontSize: "0.88rem",
-                  transition: "all 0.1s",
-                }}
-              >
-                Selengkapnya →
-              </button>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
-              }}
-            >
-              {SKILLS.slice(0, 4).map((sk) => (
-                <div
-                  key={sk.label}
+            <Reveal delay={100}>
+              <div>
+                <h2
                   style={{
-                    background: darkMode ? "#1e293b" : "#fff",
-                    border: `2px solid ${th.border}`,
-                    boxShadow: `4px 4px 0 ${th.shadow}`,
-                    padding: 14,
+                    fontWeight: 800,
+                    fontSize: isMobile ? "1.4rem" : "1.9rem",
+                    color: th.text,
+                    marginBottom: 14,
+                    letterSpacing: "-0.5px",
                   }}
                 >
-                  <p
-                    style={{
-                      fontWeight: 700,
-                      color: th.text,
-                      fontSize: "0.82rem",
-                      margin: "0 0 7px",
-                    }}
-                  >
-                    {sk.label}
-                  </p>
+                  Developer yang suka kerapian kode dan keindahan UI
+                </h2>
+                <p
+                  style={{
+                    color: th.muted,
+                    lineHeight: 1.8,
+                    marginBottom: 20,
+                    fontSize: "0.92rem",
+                  }}
+                >
+                  Saya adalah seorang Software Developer dengan passion besar
+                  pada dunia teknologi. Berfokus pada pembuatan solusi yang
+                  tidak hanya indah secara visual, tapi juga performa tinggi dan
+                  aksesibel.
+                </p>
+                <button
+                  onClick={() => setActivePage("tentang")}
+                  style={{
+                    fontWeight: 700,
+                    background: "transparent",
+                    border: "2px solid #2563EB",
+                    color: "#2563EB",
+                    padding: "9px 20px",
+                    cursor: "pointer",
+                    boxShadow: "4px 4px 0 #2563EB",
+                    fontSize: "0.88rem",
+                    transition: "all 0.1s",
+                  }}
+                >
+                  Selengkapnya →
+                </button>
+              </div>
+            </Reveal>
+            <Reveal delay={200}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                {SKILLS.slice(0, 4).map((sk) => (
                   <div
+                    key={sk.label}
                     style={{
-                      height: 6,
-                      background: darkMode ? "#334155" : "#e2e8f0",
+                      background: darkMode ? "#1e293b" : "#fff",
+                      border: `2px solid ${th.border}`,
+                      boxShadow: `4px 4px 0 ${th.shadow}`,
+                      padding: 14,
                     }}
                   >
+                    <p
+                      style={{
+                        fontWeight: 700,
+                        color: th.text,
+                        fontSize: "0.82rem",
+                        margin: "0 0 7px",
+                      }}
+                    >
+                      {sk.label}
+                    </p>
                     <div
                       style={{
-                        height: "100%",
-                        width: sk.level + "%",
-                        background: "#2563EB",
+                        height: 6,
+                        background: darkMode ? "#334155" : "#e2e8f0",
                       }}
-                    />
+                    >
+                      <div
+                        style={{
+                          height: "100%",
+                          width: sk.level + "%",
+                          background: "#2563EB",
+                        }}
+                      />
+                    </div>
+                    <p
+                      style={{
+                        color: "#2563EB",
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      {sk.level}%
+                    </p>
                   </div>
-                  <p
-                    style={{
-                      color: "#2563EB",
-                      fontSize: "0.72rem",
-                      fontWeight: 700,
-                      margin: "4px 0 0",
-                    }}
-                  >
-                    {sk.level}%
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -1290,39 +1448,38 @@ function HomePage({ darkMode, setActivePage }) {
       {/* PORTFOLIO PREVIEW */}
       <section style={{ padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Portfolio" />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              margin: "14px 0 24px",
-            }}
-          >
+          <Reveal>
+            <SectionLabel label="Portfolio" />
+          </Reveal>
+          <Reveal delay={80}>
             <h2
               style={{
                 fontWeight: 800,
                 fontSize: isMobile ? "1.4rem" : "1.9rem",
                 color: th.text,
                 letterSpacing: "-0.5px",
-                margin: 0,
+                margin: "14px 0 24px",
               }}
             >
               Proyek Terbaru
             </h2>
-          </div>
+          </Reveal>
           <div
             style={{ display: "grid", gridTemplateColumns: projCols, gap: 14 }}
           >
-            {PROJECTS.slice(0, 4).map((p) => (
-              <ProjectCard key={p.id} project={p} darkMode={darkMode} />
+            {PROJECTS.slice(0, 4).map((p, i) => (
+              <Reveal key={p.id} delay={i * 80}>
+                <ProjectCard project={p} darkMode={darkMode} />
+              </Reveal>
             ))}
           </div>
-          <div style={{ textAlign: "right", marginTop: 18 }}>
-            <SmallBtn onClick={() => setActivePage("portfolio")}>
-              Lihat Selengkapnya →
-            </SmallBtn>
-          </div>
+          <Reveal delay={320}>
+            <div style={{ textAlign: "right", marginTop: 18 }}>
+              <SmallBtn onClick={() => setActivePage("portfolio")}>
+                Lihat Selengkapnya →
+              </SmallBtn>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -1336,27 +1493,22 @@ function HomePage({ darkMode, setActivePage }) {
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel label="Blog" />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              margin: "14px 0 24px",
-            }}
-          >
+          <Reveal>
+            <SectionLabel label="Blog" />
+          </Reveal>
+          <Reveal delay={80}>
             <h2
               style={{
                 fontWeight: 800,
                 fontSize: isMobile ? "1.4rem" : "1.9rem",
                 color: th.text,
                 letterSpacing: "-0.5px",
-                margin: 0,
+                margin: "14px 0 24px",
               }}
             >
               Blog Terkini
             </h2>
-          </div>
+          </Reveal>
           <div
             style={{
               display: "grid",
@@ -1365,22 +1517,28 @@ function HomePage({ darkMode, setActivePage }) {
               gridAutoRows: "1fr",
             }}
           >
-            {BLOGS.slice(0, 4).map((b) => (
-              <BlogCard key={b.id} blog={b} darkMode={darkMode} />
+            {BLOGS.slice(0, 4).map((b, i) => (
+              <Reveal key={b.id} delay={i * 80}>
+                <BlogCard blog={b} darkMode={darkMode} />
+              </Reveal>
             ))}
           </div>
-          <div style={{ textAlign: "right", marginTop: 18 }}>
-            <SmallBtn onClick={() => setActivePage("blog")}>
-              Lihat Selengkapnya →
-            </SmallBtn>
-          </div>
+          <Reveal delay={320}>
+            <div style={{ textAlign: "right", marginTop: 18 }}>
+              <SmallBtn onClick={() => setActivePage("blog")}>
+                Lihat Selengkapnya →
+              </SmallBtn>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* CTA */}
       <section style={{ padding: isMobile ? "3rem 1.25rem" : "5rem 1.5rem" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <ContactCTA darkMode={darkMode} setActivePage={setActivePage} />
+          <Reveal>
+            <ContactCTA darkMode={darkMode} setActivePage={setActivePage} />
+          </Reveal>
         </div>
       </section>
     </div>
@@ -1392,6 +1550,7 @@ function TentangPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
   const isSmall = isMobile || isTablet;
+  useScrollReveal();
 
   return (
     <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
@@ -1402,136 +1561,138 @@ function TentangPage({ darkMode }) {
           padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
         }}
       >
-        <SectionLabel label="Tentang Saya" />
+        <Reveal>
+          <SectionLabel label="Tentang Saya" />
+        </Reveal>
 
-        {/* Profile */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: isSmall ? "column" : "row",
-            gap: isSmall ? "1.5rem" : "3rem",
-            alignItems: isSmall ? "center" : "flex-start",
-            marginTop: 32,
-            marginBottom: 40,
-            textAlign: isSmall ? "center" : "left",
-          }}
-        >
+        <Reveal delay={100}>
           <div
             style={{
-              width: isSmall ? 120 : 160,
-              height: isSmall ? 120 : 160,
-              background: "#2563EB",
-              border: `4px solid ${darkMode ? "#e2e8f0" : "#0a0a0a"}`,
-              boxShadow: `6px 6px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: isSmall ? "2.5rem" : "3.5rem",
-              flexShrink: 0,
+              flexDirection: isSmall ? "column" : "row",
+              gap: isSmall ? "1.5rem" : "3rem",
+              alignItems: isSmall ? "center" : "flex-start",
+              marginTop: 32,
+              marginBottom: 40,
+              textAlign: isSmall ? "center" : "left",
             }}
           >
-            👨‍💻
-          </div>
-          <div>
-            <h1
+            <div
               style={{
-                fontWeight: 900,
-                fontSize: isMobile ? "1.8rem" : "2.4rem",
-                color: th.text,
-                margin: "0 0 6px",
-                letterSpacing: "-1px",
+                width: isSmall ? 120 : 160,
+                height: isSmall ? 120 : 160,
+                background: "#2563EB",
+                border: `4px solid ${darkMode ? "#e2e8f0" : "#0a0a0a"}`,
+                boxShadow: `6px 6px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: isSmall ? "2.5rem" : "3.5rem",
+                flexShrink: 0,
               }}
             >
-              Restu Anggia Putra
-            </h1>
+              👨‍💻
+            </div>
+            <div>
+              <h1
+                style={{
+                  fontWeight: 900,
+                  fontSize: isMobile ? "1.8rem" : "2.4rem",
+                  color: th.text,
+                  margin: "0 0 6px",
+                  letterSpacing: "-1px",
+                }}
+              >
+                Restu Anggia Putra
+              </h1>
+              <p
+                style={{
+                  color: "#2563EB",
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                  margin: "0 0 12px",
+                }}
+              >
+                Software Developer & Tech Enthusiast
+              </p>
+              <p
+                style={{
+                  color: th.muted,
+                  lineHeight: 1.8,
+                  fontSize: "0.92rem",
+                  maxWidth: 480,
+                }}
+              >
+                Halo! Saya Restu, seorang developer yang suka menciptakan
+                pengalaman digital yang inovatif. Saya percaya bahwa kode yang
+                baik bukan hanya fungsional tapi juga indah dan mudah dibaca.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <div
+            style={{
+              background: th.bgCard,
+              border: `2px solid ${th.border}`,
+              boxShadow: `5px 5px 0 ${th.shadow}`,
+              padding: isMobile ? "1.25rem" : "1.75rem",
+              marginBottom: 36,
+            }}
+          >
+            <h2
+              style={{
+                fontWeight: 800,
+                fontSize: "1.2rem",
+                color: th.text,
+                marginBottom: 12,
+              }}
+            >
+              💡 Siapa Saya?
+            </h2>
             <p
               style={{
-                color: "#2563EB",
-                fontWeight: 700,
-                fontSize: "0.95rem",
-                margin: "0 0 12px",
+                color: th.muted,
+                lineHeight: 1.9,
+                marginBottom: 12,
+                fontSize: "0.9rem",
               }}
             >
-              Software Developer & Tech Enthusiast
+              Perjalanan saya di dunia teknologi dimulai dari rasa penasaran
+              tentang bagaimana perkembangan Teknologi dapat mengubah cara
+              manusia bekerja, belajar, dan berinteraksi. Rasa ingin tahu
+              tersebut mendorong saya untuk mempelajari semuanya dari dasar,
+              mulai dari fundamental programming, berbagai bahasa pemrograman,
+              desain antarmuka, hingga teknologi modern.
             </p>
             <p
               style={{
                 color: th.muted,
-                lineHeight: 1.8,
-                fontSize: "0.92rem",
-                maxWidth: 480,
+                lineHeight: 1.9,
+                fontSize: "0.9rem",
+                margin: 0,
               }}
             >
-              Halo! Saya Restu, seorang developer yang suka menciptakan
-              pengalaman digital yang inovatif. Saya percaya bahwa kode yang
-              baik bukan hanya fungsional tapi juga indah dan mudah dibaca.
+              Di luar aktivitas coding, saya gemar membaca artikel, buku, serta
+              mengikuti perkembangan terbaru di dunia software development, user
+              interface design, dan inovasi digital.
             </p>
           </div>
-        </div>
+        </Reveal>
 
-        {/* Bio */}
-        <div
-          style={{
-            background: th.bgCard,
-            border: `2px solid ${th.border}`,
-            boxShadow: `5px 5px 0 ${th.shadow}`,
-            padding: isMobile ? "1.25rem" : "1.75rem",
-            marginBottom: 36,
-          }}
-        >
+        <Reveal delay={80}>
           <h2
             style={{
               fontWeight: 800,
-              fontSize: "1.2rem",
+              fontSize: "1.4rem",
               color: th.text,
-              marginBottom: 12,
+              marginBottom: 18,
             }}
           >
-            💡 Siapa Saya?
+            🛠 Tech Stack
           </h2>
-          <p
-            style={{
-              color: th.muted,
-              lineHeight: 1.9,
-              marginBottom: 12,
-              fontSize: "0.9rem",
-            }}
-          >
-            Perjalanan saya di dunia teknologi dimulai dari rasa penasaran
-            tentang bagaimana perkembangan Teknologi dapat mengubah cara manusia
-            bekerja, belajar, dan berinteraksi. Rasa ingin tahu tersebut
-            mendorong saya untuk mempelajari semuanya dari dasar, mulai dari
-            fundamental programming, berbagai bahasa pemrograman, desain
-            antarmuka, hingga teknologi modern yang digunakan untuk membangun
-            website dan aplikasi.
-          </p>
-          <p
-            style={{
-              color: th.muted,
-              lineHeight: 1.9,
-              fontSize: "0.9rem",
-              margin: 0,
-            }}
-          >
-            Di luar aktivitas coding, saya gemar membaca artikel, buku, serta
-            mengikuti perkembangan terbaru di dunia software development, user
-            interface design, dan inovasi digital. Saya juga senang mengeksplor
-            tren desain modern dan terus belajar hal-hal baru untuk meningkatkan
-            kualitas karya yang saya bangun.
-          </p>
-        </div>
-
-        {/* Skills */}
-        <h2
-          style={{
-            fontWeight: 800,
-            fontSize: "1.4rem",
-            color: th.text,
-            marginBottom: 18,
-          }}
-        >
-          🛠 Tech Stack
-        </h2>
+        </Reveal>
         <div
           style={{
             display: "grid",
@@ -1540,129 +1701,132 @@ function TentangPage({ darkMode }) {
             marginBottom: 40,
           }}
         >
-          {SKILLS.map((sk) => (
-            <div
-              key={sk.label}
-              style={{
-                background: th.bgCard,
-                border: `2px solid ${th.border}`,
-                padding: "13px 16px",
-              }}
-            >
+          {SKILLS.map((sk, i) => (
+            <Reveal key={sk.label} delay={i * 70}>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 8,
-                }}
-              >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: th.text,
-                    fontSize: "0.88rem",
-                  }}
-                >
-                  {sk.label}
-                </span>
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: "#2563EB",
-                    fontSize: "0.82rem",
-                  }}
-                >
-                  {sk.level}%
-                </span>
-              </div>
-              <div
-                style={{
-                  height: 7,
-                  background: darkMode ? "#1e293b" : "#e2e8f0",
+                  background: th.bgCard,
+                  border: `2px solid ${th.border}`,
+                  padding: "13px 16px",
                 }}
               >
                 <div
                   style={{
-                    height: "100%",
-                    width: sk.level + "%",
-                    background: "#2563EB",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: 8,
                   }}
-                />
+                >
+                  <span
+                    style={{
+                      fontWeight: 700,
+                      color: th.text,
+                      fontSize: "0.88rem",
+                    }}
+                  >
+                    {sk.label}
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 700,
+                      color: "#2563EB",
+                      fontSize: "0.82rem",
+                    }}
+                  >
+                    {sk.level}%
+                  </span>
+                </div>
+                <div
+                  style={{
+                    height: 7,
+                    background: darkMode ? "#1e293b" : "#e2e8f0",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: sk.level + "%",
+                      background: "#2563EB",
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
 
-        {/* Experience */}
-        <h2
-          style={{
-            fontWeight: 800,
-            fontSize: "1.4rem",
-            color: th.text,
-            marginBottom: 18,
-          }}
-        >
-          💼 Pengalaman
-        </h2>
+        <Reveal delay={80}>
+          <h2
+            style={{
+              fontWeight: 800,
+              fontSize: "1.4rem",
+              color: th.text,
+              marginBottom: 18,
+            }}
+          >
+            💼 Pengalaman
+          </h2>
+        </Reveal>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {EXPERIENCES.map((exp, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                gap: isMobile ? 6 : 22,
-                background: th.bgCard,
-                border: `2px solid ${th.border}`,
-                boxShadow: `4px 4px 0 ${th.shadow}`,
-                padding: isMobile ? "14px" : "18px 22px",
-              }}
-            >
+            <Reveal key={i} delay={i * 100}>
               <div
                 style={{
-                  minWidth: 130,
-                  color: "#2563EB",
-                  fontWeight: 700,
-                  fontSize: "0.78rem",
-                  paddingTop: isMobile ? 0 : 2,
-                  flexShrink: 0,
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  gap: isMobile ? 6 : 22,
+                  background: th.bgCard,
+                  border: `2px solid ${th.border}`,
+                  boxShadow: `4px 4px 0 ${th.shadow}`,
+                  padding: isMobile ? "14px" : "18px 22px",
                 }}
               >
-                {exp.year}
-              </div>
-              <div>
-                <p
+                <div
                   style={{
-                    fontWeight: 700,
-                    color: th.text,
-                    margin: "0 0 2px",
-                    fontSize: "0.92rem",
-                  }}
-                >
-                  {exp.role}
-                </p>
-                <p
-                  style={{
+                    minWidth: 160,
                     color: "#2563EB",
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    margin: "0 0 5px",
+                    fontWeight: 700,
+                    fontSize: "0.78rem",
+                    paddingTop: isMobile ? 0 : 2,
+                    flexShrink: 0,
                   }}
                 >
-                  {exp.company}
-                </p>
-                <p
-                  style={{
-                    color: th.muted,
-                    fontSize: "0.85rem",
-                    margin: 0,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {exp.desc}
-                </p>
+                  {exp.year}
+                </div>
+                <div>
+                  <p
+                    style={{
+                      fontWeight: 700,
+                      color: th.text,
+                      margin: "0 0 2px",
+                      fontSize: "0.92rem",
+                    }}
+                  >
+                    {exp.role}
+                  </p>
+                  <p
+                    style={{
+                      color: "#2563EB",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      margin: "0 0 5px",
+                    }}
+                  >
+                    {exp.company}
+                  </p>
+                  <p
+                    style={{
+                      color: th.muted,
+                      fontSize: "0.85rem",
+                      margin: 0,
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {exp.desc}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -1685,6 +1849,7 @@ function PortfolioPage({ darkMode }) {
     : isTablet
       ? "repeat(2, 1fr)"
       : "repeat(3, 1fr)";
+  useScrollReveal();
 
   return (
     <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
@@ -1695,52 +1860,57 @@ function PortfolioPage({ darkMode }) {
           padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
         }}
       >
-        <SectionLabel label="Portfolio" />
-        <h1
-          style={{
-            fontWeight: 900,
-            fontSize: isMobile ? "1.8rem" : "2.8rem",
-            color: th.text,
-            marginTop: 14,
-            marginBottom: 8,
-            letterSpacing: "-1px",
-          }}
-        >
-          Proyek yang Telah Saya Kerjakan
-        </h1>
-        <p style={{ color: th.muted, marginBottom: 28, fontSize: "0.9rem" }}>
-          Kumpulan proyek nyata dari berbagai tugas yang telah dibantu.
-        </p>
+        <Reveal>
+          <SectionLabel label="Portfolio" />
+        </Reveal>
+        <Reveal delay={80}>
+          <h1
+            style={{
+              fontWeight: 900,
+              fontSize: isMobile ? "1.8rem" : "2.8rem",
+              color: th.text,
+              marginTop: 14,
+              marginBottom: 8,
+              letterSpacing: "-1px",
+            }}
+          >
+            Proyek yang Telah Saya Kerjakan
+          </h1>
+          <p style={{ color: th.muted, marginBottom: 28, fontSize: "0.9rem" }}>
+            Kumpulan proyek nyata dari berbagai tugas yang telah dibantu.
+          </p>
+        </Reveal>
 
-        {/* Filter chips */}
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            marginBottom: 32,
-            flexWrap: "wrap",
-          }}
-        >
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setFilter(tag)}
-              style={{
-                fontWeight: 700,
-                fontSize: "0.82rem",
-                background: filter === tag ? "#2563EB" : "transparent",
-                color: filter === tag ? "#fff" : th.muted,
-                border: `2px solid ${filter === tag ? "#1D4ED8" : darkMode ? "#334155" : "#cbd5e1"}`,
-                boxShadow: filter === tag ? "3px 3px 0 #1D4ED8" : "none",
-                padding: "6px 14px",
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
+        <Reveal delay={140}>
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginBottom: 32,
+              flexWrap: "wrap",
+            }}
+          >
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setFilter(tag)}
+                style={{
+                  fontWeight: 700,
+                  fontSize: "0.82rem",
+                  background: filter === tag ? "#2563EB" : "transparent",
+                  color: filter === tag ? "#fff" : th.muted,
+                  border: `2px solid ${filter === tag ? "#1D4ED8" : darkMode ? "#334155" : "#cbd5e1"}`,
+                  boxShadow: filter === tag ? "3px 3px 0 #1D4ED8" : "none",
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </Reveal>
 
         <div style={{ display: "grid", gridTemplateColumns: cols, gap: 18 }}>
           {filtered.map((p) => (
@@ -1756,6 +1926,7 @@ function PortfolioPage({ darkMode }) {
 function BlogPage({ darkMode }) {
   const { isMobile } = useBreakpoint();
   const th = t(darkMode);
+  useScrollReveal();
 
   return (
     <div style={{ background: th.bg, minHeight: "100vh", paddingTop: 62 }}>
@@ -1766,110 +1937,116 @@ function BlogPage({ darkMode }) {
           padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
         }}
       >
-        <SectionLabel label="Blog" />
-        <h1
-          style={{
-            fontWeight: 900,
-            fontSize: isMobile ? "1.8rem" : "2.8rem",
-            color: th.text,
-            marginTop: 14,
-            marginBottom: 8,
-            letterSpacing: "-1px",
-          }}
-        >
-          Tulisan & Artikel
-        </h1>
-        <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
-          Berbagi pengetahuan, pengalaman, dan insight seputar dunia teknologi.
-        </p>
+        <Reveal>
+          <SectionLabel label="Blog" />
+        </Reveal>
+        <Reveal delay={80}>
+          <h1
+            style={{
+              fontWeight: 900,
+              fontSize: isMobile ? "1.8rem" : "2.8rem",
+              color: th.text,
+              marginTop: 14,
+              marginBottom: 8,
+              letterSpacing: "-1px",
+            }}
+          >
+            Tulisan & Artikel
+          </h1>
+          <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
+            Berbagi pengetahuan, pengalaman, dan insight seputar dunia
+            teknologi.
+          </p>
+        </Reveal>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {BLOGS.map((b) => (
-            <a
-              key={b.id}
-              href={b.url}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                background: th.bgCard,
-                border: `2px solid ${th.border}`,
-                boxShadow: `5px 5px 0 ${th.shadow}`,
-                padding: isMobile ? "18px" : "26px 30px",
-                cursor: "pointer",
-                transition: "transform 0.1s, box-shadow 0.1s",
-                textDecoration: "none",
-                display: "block",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translate(-2px,-2px)";
-                e.currentTarget.style.boxShadow = `7px 7px 0 ${th.shadow}`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translate(0,0)";
-                e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
-              }}
-            >
-              <div
+          {BLOGS.map((b, i) => (
+            <Reveal key={b.id} delay={i * 80}>
+              <a
+                href={b.url}
+                target="_blank"
+                rel="noreferrer"
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  marginBottom: 10,
-                  flexWrap: "wrap",
-                  gap: 8,
+                  background: th.bgCard,
+                  border: `2px solid ${th.border}`,
+                  boxShadow: `5px 5px 0 ${th.shadow}`,
+                  padding: isMobile ? "18px" : "26px 30px",
+                  cursor: "pointer",
+                  transition: "transform 0.1s, box-shadow 0.1s",
+                  textDecoration: "none",
+                  display: "block",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translate(-2px,-2px)";
+                  e.currentTarget.style.boxShadow = `7px 7px 0 ${th.shadow}`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translate(0,0)";
+                  e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
                 }}
               >
-                <span
+                <div
                   style={{
-                    background: "#dbeafe",
-                    border: "1.5px solid #2563EB",
-                    color: "#1D4ED8",
-                    fontWeight: 700,
-                    fontSize: "0.72rem",
-                    padding: "2px 9px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    marginBottom: 10,
+                    flexWrap: "wrap",
+                    gap: 8,
                   }}
                 >
-                  {b.tag}
-                </span>
-                <span style={{ color: th.muted, fontSize: "0.75rem" }}>
-                  {b.date} · {b.readTime} baca
-                </span>
-              </div>
-              <h2
-                style={{
-                  fontWeight: 800,
-                  fontSize: isMobile ? "0.98rem" : "1.1rem",
-                  color: th.text,
-                  margin: "0 0 8px",
-                  letterSpacing: "-0.3px",
-                }}
-              >
-                {b.title}
-              </h2>
-              <p
-                style={{
-                  color: th.muted,
-                  lineHeight: 1.7,
-                  margin: 0,
-                  fontSize: "0.88rem",
-                }}
-              >
-                {b.excerpt}
-              </p>
-              <p
-                style={{
-                  color: "#2563EB",
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  margin: "12px 0 0",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-              >
-                Baca Selengkapnya →
-              </p>
-            </a>
+                  <span
+                    style={{
+                      background: "#dbeafe",
+                      border: "1.5px solid #2563EB",
+                      color: "#1D4ED8",
+                      fontWeight: 700,
+                      fontSize: "0.72rem",
+                      padding: "2px 9px",
+                    }}
+                  >
+                    {b.tag}
+                  </span>
+                  <span style={{ color: th.muted, fontSize: "0.75rem" }}>
+                    {b.date} · {b.readTime} baca
+                  </span>
+                </div>
+                <h2
+                  style={{
+                    fontWeight: 800,
+                    fontSize: isMobile ? "0.98rem" : "1.1rem",
+                    color: th.text,
+                    margin: "0 0 8px",
+                    letterSpacing: "-0.3px",
+                  }}
+                >
+                  {b.title}
+                </h2>
+                <p
+                  style={{
+                    color: th.muted,
+                    lineHeight: 1.7,
+                    margin: 0,
+                    fontSize: "0.88rem",
+                  }}
+                >
+                  {b.excerpt}
+                </p>
+                <p
+                  style={{
+                    color: "#2563EB",
+                    fontWeight: 700,
+                    fontSize: "0.85rem",
+                    margin: "12px 0 0",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  Baca Selengkapnya →
+                </p>
+              </a>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -1878,13 +2055,11 @@ function BlogPage({ darkMode }) {
 }
 
 // ===== KONTAK PAGE =====
-// ⚙️  Ganti nomor WA di sini (format internasional tanpa + atau spasi)
-const WA_NUMBER = "6285368750970";
-
 function KontakPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
   const isSmall = isMobile || isTablet;
+  useScrollReveal();
 
   const [form, setForm] = useState({
     nama: "",
@@ -1916,8 +2091,6 @@ function KontakPage({ darkMode }) {
       return;
     }
     setErrors({});
-
-    // Buat template pesan WhatsApp otomatis
     const template = [
       `Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.`,
       ``,
@@ -1930,9 +2103,11 @@ function KontakPage({ darkMode }) {
       ``,
       `Ditunggu balasannya ya! 🙏`,
     ].join("\n");
-
-    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(template)}`;
-    window.open(waUrl, "_blank", "noreferrer");
+    window.open(
+      `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(template)}`,
+      "_blank",
+      "noreferrer",
+    );
     setSent(true);
   };
 
@@ -1957,23 +2132,27 @@ function KontakPage({ darkMode }) {
           padding: isMobile ? "2.5rem 1.25rem" : "4rem 1.5rem",
         }}
       >
-        <SectionLabel label="Kontak" />
-        <h1
-          style={{
-            fontWeight: 900,
-            fontSize: isMobile ? "1.8rem" : "2.8rem",
-            color: th.text,
-            marginTop: 14,
-            marginBottom: 8,
-            letterSpacing: "-1px",
-          }}
-        >
-          Mari Berkolaborasi! 🤝
-        </h1>
-        <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
-          Punya proyek menarik? Atau sekadar ingin ngobrol? Saya selalu terbuka
-          untuk diskusi dan kesempatan baru.
-        </p>
+        <Reveal>
+          <SectionLabel label="Kontak" />
+        </Reveal>
+        <Reveal delay={80}>
+          <h1
+            style={{
+              fontWeight: 900,
+              fontSize: isMobile ? "1.8rem" : "2.8rem",
+              color: th.text,
+              marginTop: 14,
+              marginBottom: 8,
+              letterSpacing: "-1px",
+            }}
+          >
+            Mari Berkolaborasi! 🤝
+          </h1>
+          <p style={{ color: th.muted, marginBottom: 36, fontSize: "0.9rem" }}>
+            Punya proyek menarik? Atau sekadar ingin ngobrol? Saya selalu
+            terbuka untuk diskusi dan kesempatan baru.
+          </p>
+        </Reveal>
 
         <div
           style={{
@@ -1982,430 +2161,382 @@ function KontakPage({ darkMode }) {
             gap: isSmall ? "2rem" : "3rem",
           }}
         >
-          {/* Info column */}
-          <div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                {
-                  icon: "📧",
-                  label: "Email",
-                  value: "restuanggia10@gmail.com",
-                },
-                {
-                  icon: "📍",
-                  label: "Lokasi",
-                  value: "Tulang Bawang, Lampung, Indonesia",
-                },
-                { icon: "⏰", label: "Zona Waktu", value: "09:00 – 16:00 WIB" },
-                {
-                  icon: "✅",
-                  label: "Status",
-                  value: "Tersedia untuk freelance",
-                },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  style={{
-                    background: th.bgCard,
-                    border: `2px solid ${th.border}`,
-                    padding: "13px 16px",
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "center",
-                  }}
-                >
-                  <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
-                  <div>
-                    <p
-                      style={{
-                        color: th.muted,
-                        fontSize: "0.7rem",
-                        margin: "0 0 1px",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      {item.label}
-                    </p>
-                    <p
-                      style={{
-                        color: th.text,
-                        fontWeight: 700,
-                        fontSize: "0.88rem",
-                        margin: 0,
-                      }}
-                    >
-                      {item.value}
-                    </p>
+          <Reveal delay={160}>
+            <div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              >
+                {[
+                  {
+                    icon: "📧",
+                    label: "Email",
+                    value: "restuanggia10@gmail.com",
+                  },
+                  {
+                    icon: "📍",
+                    label: "Lokasi",
+                    value: "Tulang Bawang, Lampung, Indonesia",
+                  },
+                  {
+                    icon: "⏰",
+                    label: "Zona Waktu",
+                    value: "09:00 – 16:00 WIB",
+                  },
+                  {
+                    icon: "✅",
+                    label: "Status",
+                    value: "Tersedia untuk freelance",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    style={{
+                      background: th.bgCard,
+                      border: `2px solid ${th.border}`,
+                      padding: "13px 16px",
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
+                    <div>
+                      <p
+                        style={{
+                          color: th.muted,
+                          fontSize: "0.7rem",
+                          margin: "0 0 1px",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
+                      >
+                        {item.label}
+                      </p>
+                      <p
+                        style={{
+                          color: th.text,
+                          fontWeight: 700,
+                          fontSize: "0.88rem",
+                          margin: 0,
+                        }}
+                      >
+                        {item.value}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              <a
+                href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo Restu! 👋 Saya ingin ngobrol sebentar. Ada yang bisa kamu bantu? 😊")}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  marginTop: 16,
+                  background: "#22c55e",
+                  border: "3px solid #0a0a0a",
+                  boxShadow: "5px 5px 0 #0a0a0a",
+                  color: "#fff",
+                  fontWeight: 800,
+                  fontSize: "0.92rem",
+                  padding: "12px",
+                  textDecoration: "none",
+                }}
+              >
+                💬 Chat via WhatsApp
+              </a>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  marginTop: 14,
+                  flexWrap: "wrap",
+                }}
+              >
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      background: "transparent",
+                      border: `2px solid ${th.border}`,
+                      color: th.muted,
+                      padding: "6px 12px",
+                      fontWeight: 700,
+                      fontSize: "0.78rem",
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                      transition: "all 0.15s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#2563EB";
+                      e.currentTarget.style.color = "#fff";
+                      e.currentTarget.style.borderColor = "#2563EB";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color = th.muted;
+                      e.currentTarget.style.borderColor = th.border;
+                    }}
+                  >
+                    {s.icon} {s.label}
+                  </a>
+                ))}
+              </div>
             </div>
+          </Reveal>
 
-            {/* WhatsApp langsung (tanpa form — chat kosong dengan salam awal) */}
-            <a
-              href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo Restu! 👋 Saya ingin ngobrol sebentar. Ada yang bisa kamu bantu? 😊")}`}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                marginTop: 16,
-                background: "#22c55e",
-                border: "3px solid #0a0a0a",
-                boxShadow: "5px 5px 0 #0a0a0a",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: "0.92rem",
-                padding: "12px",
-                textDecoration: "none",
-              }}
-            >
-              💬 Chat via WhatsApp
-            </a>
-
+          <Reveal delay={260}>
             <div
               style={{
-                display: "flex",
-                gap: 8,
-                marginTop: 14,
-                flexWrap: "wrap",
+                background: th.bgCard,
+                border: "3px solid #2563EB",
+                boxShadow: `7px 7px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
+                padding: isMobile ? "1.25rem" : "1.75rem",
               }}
             >
-              {SOCIALS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    background: "transparent",
-                    border: `2px solid ${th.border}`,
-                    color: th.muted,
-                    padding: "6px 12px",
-                    fontWeight: 700,
-                    fontSize: "0.78rem",
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 5,
-                    transition: "all 0.15s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2563EB";
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.borderColor = "#2563EB";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = th.muted;
-                    e.currentTarget.style.borderColor = th.border;
-                  }}
-                >
-                  {s.icon} {s.label}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Form */}
-          <div
-            style={{
-              background: th.bgCard,
-              border: "3px solid #2563EB",
-              boxShadow: `7px 7px 0 ${darkMode ? "#1e3a8a" : "#1D4ED8"}`,
-              padding: isMobile ? "1.25rem" : "1.75rem",
-            }}
-          >
-            {sent ? (
-              <div style={{ textAlign: "center", padding: "2.5rem 0" }}>
-                <div style={{ fontSize: "3rem", marginBottom: 12 }}>🎉</div>
-                <h3
-                  style={{ fontWeight: 800, color: th.text, marginBottom: 8 }}
-                >
-                  WhatsApp Terbuka!
-                </h3>
-                <p
-                  style={{
-                    color: th.muted,
-                    fontSize: "0.9rem",
-                    lineHeight: 1.7,
-                    marginBottom: 20,
-                  }}
-                >
-                  Pesan kamu sudah disiapkan otomatis di WhatsApp. Tinggal klik{" "}
-                  <strong>Send</strong> untuk mengirimnya ke saya! 🚀
-                </p>
-                <button
-                  onClick={() => {
-                    setSent(false);
-                    setForm({ nama: "", email: "", subjek: "", pesan: "" });
-                  }}
-                  style={{
-                    fontWeight: 700,
-                    fontSize: "0.88rem",
-                    background: "transparent",
-                    border: "2px solid #2563EB",
-                    color: "#2563EB",
-                    padding: "9px 20px",
-                    cursor: "pointer",
-                    boxShadow: "3px 3px 0 #2563EB",
-                  }}
-                >
-                  Kirim Pesan Lain
-                </button>
-              </div>
-            ) : (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 16 }}
-              >
-                <div>
+              {sent ? (
+                <div style={{ textAlign: "center", padding: "2.5rem 0" }}>
+                  <div style={{ fontSize: "3rem", marginBottom: 12 }}>🎉</div>
                   <h3
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "1.15rem",
-                      color: th.text,
-                      margin: "0 0 4px",
-                    }}
+                    style={{ fontWeight: 800, color: th.text, marginBottom: 8 }}
                   >
-                    Kirim Pesan via WhatsApp
+                    WhatsApp Terbuka!
                   </h3>
                   <p
-                    style={{ color: th.muted, fontSize: "0.78rem", margin: 0 }}
-                  >
-                    Isi form di bawah → pesan dikirim langsung ke WhatsApp saya
-                    📱
-                  </p>
-                </div>
-
-                {/* Nama */}
-                <div>
-                  <label
                     style={{
-                      display: "block",
-                      fontWeight: 700,
-                      color: th.text,
-                      fontSize: "0.85rem",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Nama Lengkap *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Restu Anggia"
-                    value={form.nama}
-                    onChange={set("nama")}
-                    style={inputSt("nama")}
-                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.nama
-                        ? "#ef4444"
-                        : th.border)
-                    }
-                  />
-                  {errors.nama && (
-                    <p
-                      style={{
-                        color: "#ef4444",
-                        fontSize: "0.75rem",
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      ⚠ {errors.nama}
-                    </p>
-                  )}
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontWeight: 700,
-                      color: th.text,
-                      fontSize: "0.85rem",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="restu@email.com"
-                    value={form.email}
-                    onChange={set("email")}
-                    style={inputSt("email")}
-                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.email
-                        ? "#ef4444"
-                        : th.border)
-                    }
-                  />
-                  {errors.email && (
-                    <p
-                      style={{
-                        color: "#ef4444",
-                        fontSize: "0.75rem",
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      ⚠ {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                {/* Subjek */}
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontWeight: 700,
-                      color: th.text,
-                      fontSize: "0.85rem",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Subjek *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Kolaborasi Proyek"
-                    value={form.subjek}
-                    onChange={set("subjek")}
-                    style={inputSt("subjek")}
-                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.subjek
-                        ? "#ef4444"
-                        : th.border)
-                    }
-                  />
-                  {errors.subjek && (
-                    <p
-                      style={{
-                        color: "#ef4444",
-                        fontSize: "0.75rem",
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      ⚠ {errors.subjek}
-                    </p>
-                  )}
-                </div>
-
-                {/* Pesan */}
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontWeight: 700,
-                      color: th.text,
-                      fontSize: "0.85rem",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Pesan *
-                  </label>
-                  <textarea
-                    rows={5}
-                    placeholder="Ceritakan proyek atau kebutuhan Anda..."
-                    value={form.pesan}
-                    onChange={set("pesan")}
-                    style={{ ...inputSt("pesan"), resize: "vertical" }}
-                    onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
-                    onBlur={(e) =>
-                      (e.target.style.borderColor = errors.pesan
-                        ? "#ef4444"
-                        : th.border)
-                    }
-                  />
-                  {errors.pesan && (
-                    <p
-                      style={{
-                        color: "#ef4444",
-                        fontSize: "0.75rem",
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      ⚠ {errors.pesan}
-                    </p>
-                  )}
-                </div>
-
-                {/* Preview template */}
-                {(form.nama || form.pesan) && (
-                  <div
-                    style={{
-                      background: darkMode ? "#1e293b" : "#f0fdf4",
-                      border: "1.5px dashed #22c55e",
-                      padding: "12px 14px",
-                      fontSize: "0.75rem",
                       color: th.muted,
+                      fontSize: "0.9rem",
                       lineHeight: 1.7,
+                      marginBottom: 20,
                     }}
                   >
-                    <p
+                    Pesan kamu sudah disiapkan otomatis di WhatsApp. Tinggal
+                    klik <strong>Send</strong> untuk mengirimnya ke saya! 🚀
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSent(false);
+                      setForm({ nama: "", email: "", subjek: "", pesan: "" });
+                    }}
+                    style={{
+                      fontWeight: 700,
+                      fontSize: "0.88rem",
+                      background: "transparent",
+                      border: "2px solid #2563EB",
+                      color: "#2563EB",
+                      padding: "9px 20px",
+                      cursor: "pointer",
+                      boxShadow: "3px 3px 0 #2563EB",
+                    }}
+                  >
+                    Kirim Pesan Lain
+                  </button>
+                </div>
+              ) : (
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 16 }}
+                >
+                  <div>
+                    <h3
                       style={{
-                        fontWeight: 700,
-                        color: "#22c55e",
+                        fontWeight: 800,
+                        fontSize: "1.15rem",
+                        color: th.text,
                         margin: "0 0 4px",
                       }}
                     >
-                      📋 Preview pesan WA:
-                    </p>
+                      Kirim Pesan via WhatsApp
+                    </h3>
                     <p
                       style={{
+                        color: th.muted,
+                        fontSize: "0.78rem",
                         margin: 0,
-                        whiteSpace: "pre-wrap",
-                        wordBreak: "break-word",
                       }}
                     >
-                      {`Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.\n\n*Nama:* ${form.nama || "…"}\n*Email:* ${form.email || "…"}\n*Subjek:* ${form.subjek || "…"}\n\n*Pesan:*\n${form.pesan || "…"}`}
+                      Isi form di bawah → pesan dikirim langsung ke WhatsApp
+                      saya 📱
                     </p>
                   </div>
-                )}
 
-                <button
-                  onClick={handleSend}
-                  onMouseDown={pressDown}
-                  onMouseUp={pressUp}
-                  style={{
-                    fontWeight: 800,
-                    fontSize: "0.92rem",
-                    background: "#22c55e",
-                    color: "#fff",
-                    border: "3px solid #0a0a0a",
-                    boxShadow: "5px 5px 0 #0a0a0a",
-                    padding: "12px",
-                    cursor: "pointer",
-                    transition: "all 0.1s",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  💬 Kirim ke WhatsApp
-                </button>
+                  {[
+                    {
+                      key: "nama",
+                      label: "Nama Lengkap *",
+                      type: "text",
+                      ph: "Restu Anggia",
+                    },
+                    {
+                      key: "email",
+                      label: "Email *",
+                      type: "email",
+                      ph: "restu@email.com",
+                    },
+                    {
+                      key: "subjek",
+                      label: "Subjek *",
+                      type: "text",
+                      ph: "Kolaborasi Proyek",
+                    },
+                  ].map((f) => (
+                    <div key={f.key}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontWeight: 700,
+                          color: th.text,
+                          fontSize: "0.85rem",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {f.label}
+                      </label>
+                      <input
+                        type={f.type}
+                        placeholder={f.ph}
+                        value={form[f.key]}
+                        onChange={set(f.key)}
+                        style={inputSt(f.key)}
+                        onFocus={(e) =>
+                          (e.target.style.borderColor = "#2563EB")
+                        }
+                        onBlur={(e) =>
+                          (e.target.style.borderColor = errors[f.key]
+                            ? "#ef4444"
+                            : th.border)
+                        }
+                      />
+                      {errors[f.key] && (
+                        <p
+                          style={{
+                            color: "#ef4444",
+                            fontSize: "0.75rem",
+                            margin: "4px 0 0",
+                          }}
+                        >
+                          ⚠ {errors[f.key]}
+                        </p>
+                      )}
+                    </div>
+                  ))}
 
-                <p
-                  style={{
-                    color: th.muted,
-                    fontSize: "0.75rem",
-                    textAlign: "center",
-                    margin: 0,
-                  }}
-                >
-                  Pesan akan dibuka di WhatsApp secara otomatis ✓
-                </p>
-              </div>
-            )}
-          </div>
+                  <div>
+                    <label
+                      style={{
+                        display: "block",
+                        fontWeight: 700,
+                        color: th.text,
+                        fontSize: "0.85rem",
+                        marginBottom: 6,
+                      }}
+                    >
+                      Pesan *
+                    </label>
+                    <textarea
+                      rows={5}
+                      placeholder="Ceritakan proyek atau kebutuhan Anda..."
+                      value={form.pesan}
+                      onChange={set("pesan")}
+                      style={{ ...inputSt("pesan"), resize: "vertical" }}
+                      onFocus={(e) => (e.target.style.borderColor = "#2563EB")}
+                      onBlur={(e) =>
+                        (e.target.style.borderColor = errors.pesan
+                          ? "#ef4444"
+                          : th.border)
+                      }
+                    />
+                    {errors.pesan && (
+                      <p
+                        style={{
+                          color: "#ef4444",
+                          fontSize: "0.75rem",
+                          margin: "4px 0 0",
+                        }}
+                      >
+                        ⚠ {errors.pesan}
+                      </p>
+                    )}
+                  </div>
+
+                  {(form.nama || form.pesan) && (
+                    <div
+                      style={{
+                        background: darkMode ? "#1e293b" : "#f0fdf4",
+                        border: "1.5px dashed #22c55e",
+                        padding: "12px 14px",
+                        fontSize: "0.75rem",
+                        color: th.muted,
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontWeight: 700,
+                          color: "#22c55e",
+                          margin: "0 0 4px",
+                        }}
+                      >
+                        📋 Preview pesan WA:
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {`Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.\n\n*Nama:* ${form.nama || "…"}\n*Email:* ${form.email || "…"}\n*Subjek:* ${form.subjek || "…"}\n\n*Pesan:*\n${form.pesan || "…"}`}
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleSend}
+                    onMouseDown={pressDown}
+                    onMouseUp={pressUp}
+                    style={{
+                      fontWeight: 800,
+                      fontSize: "0.92rem",
+                      background: "#22c55e",
+                      color: "#fff",
+                      border: "3px solid #0a0a0a",
+                      boxShadow: "5px 5px 0 #0a0a0a",
+                      padding: "12px",
+                      cursor: "pointer",
+                      transition: "all 0.1s",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    💬 Kirim ke WhatsApp
+                  </button>
+                  <p
+                    style={{
+                      color: th.muted,
+                      fontSize: "0.75rem",
+                      textAlign: "center",
+                      margin: 0,
+                    }}
+                  >
+                    Pesan akan dibuka di WhatsApp secara otomatis ✓
+                  </p>
+                </div>
+              )}
+            </div>
+          </Reveal>
         </div>
       </div>
     </div>
@@ -2447,7 +2578,10 @@ export default function App() {
         body { font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; }
         input, textarea, button, a { font-family: inherit; }
         img { max-width: 100%; display: block; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @keyframes fadeInDown { from{opacity:0;transform:translateY(-24px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeInUp   { from{opacity:0;transform:translateY(24px)}  to{opacity:1;transform:translateY(0)} }
+        @keyframes blink      { 0%,100%{opacity:1} 50%{opacity:0} }
       `}</style>
       <Navbar
         activePage={activePage}
