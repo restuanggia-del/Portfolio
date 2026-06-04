@@ -104,6 +104,14 @@ const NAV_LINKS = [
 const PROJECTS = [
   {
     id: 1,
+    title: "EduScan",
+    desc: "Sistem Absensi Sekolah Berbasis QR Code dan Notifikasi WhatsApp Real-Time. ",
+    tags: ["React", "Vite", "Supabase"],
+    year: "2026",
+    color: "#1D4ED8",
+  },
+  {
+    id: 2,
     title: "Arroyyan99",
     desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99.",
     tags: ["React", "Vite", "Supabase"],
@@ -111,7 +119,7 @@ const PROJECTS = [
     color: "#1D4ED8",
   },
   {
-    id: 2,
+    id: 3,
     title: "Sanggar Alam",
     desc: "Aplikasi berbasis website guna sebagai media promosi dan informasi tentang jasa pembuatan karya seni ukir, pembuatan patung, pembuatan relief, dan taman kolam.",
     tags: ["Next.js", "TailwindCSS", "API"],
@@ -119,7 +127,7 @@ const PROJECTS = [
     color: "#1D4ED8",
   },
   {
-    id: 3,
+    id: 4,
     title: "Tarowehh",
     desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
     tags: ["Vue.js", "JSON Server", "TailwindCSS"],
@@ -127,7 +135,7 @@ const PROJECTS = [
     color: "#1D4ED8",
   },
   {
-    id: 4,
+    id: 5,
     title: "Desa Srimulya Jaya",
     desc: "Website Desa Srimulya Jaya yang memberikan informasi lengkap tentang desa, termasuk profil, berita, layanan publik, dan kontak penting untuk warga dan pengunjung.",
     tags: ["Astro", "TailwindCSS", "Vite"],
@@ -135,7 +143,7 @@ const PROJECTS = [
     color: "#1D4ED8",
   },
   {
-    id: 5,
+    id: 6,
     title: "Blog Sanggar Alam",
     desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam, serta memberikan informasi tentang karya-karya terbaru dan tips-tips seputar dunia seni.",
     tags: ["HTML", "CSS", "JavaScript"],
@@ -1077,7 +1085,7 @@ function Footer({ darkMode, setActivePage }) {
             © 2025 Restu Anggia Putra. Dibuat dengan sepenuh ❤️ menggunakan
             React + Vite.
           </p>
-          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0,  }}>
+          <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
             Neobrutalism Design
           </p>
         </div>
