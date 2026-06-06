@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-// ===== RESPONSIVE HOOK =====
 function useBreakpoint() {
   const [bp, setBp] = useState(() => {
     if (typeof window === "undefined")
@@ -27,13 +26,11 @@ function useBreakpoint() {
   return bp;
 }
 
-// ===== TYPING HOOK =====
 function useTyping(words, speed = 80, pause = 1800) {
   const [displayed, setDisplayed] = useState("");
   const [wordIdx, setWordIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
-
   useEffect(() => {
     const current = words[wordIdx];
     let delay = deleting ? speed / 2 : speed;
@@ -51,11 +48,9 @@ function useTyping(words, speed = 80, pause = 1800) {
     }, delay);
     return () => clearTimeout(timer);
   }, [charIdx, deleting, wordIdx, words, speed, pause]);
-
   return displayed;
 }
 
-// ===== SCROLL REVEAL HOOK =====
 function useScrollReveal() {
   useEffect(() => {
     const els = document.querySelectorAll("[data-reveal]");
@@ -92,7 +87,6 @@ function Reveal({ children, delay = 0, style: extra = {} }) {
   );
 }
 
-// ===== DATA =====
 const NAV_LINKS = [
   { id: "beranda", label: "Beranda" },
   { id: "tentang", label: "Tentang Saya" },
@@ -105,18 +99,18 @@ const PROJECTS = [
   {
     id: 1,
     title: "EduScan",
-    desc: "Sistem Absensi Sekolah Berbasis QR Code dan Notifikasi WhatsApp Real-Time. ",
+    desc: "Sistem Absensi Sekolah Berbasis QR Code dan Notifikasi WhatsApp Real-Time. Memudahkan proses absensi dengan pemindaian QR Code dan memberikan notifikasi otomatis kepada orang tua melalui WhatsApp.",
     tags: ["React", "Vite", "Supabase"],
     year: "2026",
-    color: "#1D4ED8",
+    image: "/src/assets/portfolio/eduscan.png",
   },
   {
     id: 2,
     title: "Arroyyan99",
-    desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99.",
+    desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99. Fitur utama meliputi manajemen produk, pencatatan penjualan, dan laporan keuangan yang terintegrasi.",
     tags: ["React", "Vite", "Supabase"],
     year: "2026",
-    color: "#1D4ED8",
+    image: "/src/assets/portfolio/arroyyan.png",
   },
   {
     id: 3,
@@ -124,31 +118,31 @@ const PROJECTS = [
     desc: "Aplikasi berbasis website guna sebagai media promosi dan informasi tentang jasa pembuatan karya seni ukir, pembuatan patung, pembuatan relief, dan taman kolam.",
     tags: ["Next.js", "TailwindCSS", "API"],
     year: "2025",
-    color: "#1D4ED8",
+    image: "/src/assets/portfolio/webSanggar.png",
   },
   {
     id: 4,
-    title: "Tarowehh",
-    desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
-    tags: ["Vue.js", "JSON Server", "TailwindCSS"],
-    year: "2023",
-    color: "#1D4ED8",
-  },
-  {
-    id: 5,
     title: "Desa Srimulya Jaya",
     desc: "Website Desa Srimulya Jaya yang memberikan informasi lengkap tentang desa, termasuk profil, berita, layanan publik, dan kontak penting untuk warga dan pengunjung.",
     tags: ["Astro", "TailwindCSS", "Vite"],
     year: "2025",
-    color: "#1D4ED8",
+    image: "/src/assets/portfolio/desa.png",
+  },
+  {
+    id: 5,
+    title: "Tarowehh",
+    desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
+    tags: ["Vue.js", "JSON Server", "TailwindCSS"],
+    year: "2023",
+    image: "/src/assets/portfolio/tarowehh.png",
   },
   {
     id: 6,
     title: "Blog Sanggar Alam",
-    desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam, serta memberikan informasi tentang karya-karya terbaru dan tips-tips seputar dunia seni.",
+    desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam.",
     tags: ["HTML", "CSS", "JavaScript"],
     year: "2022",
-    color: "#1D4ED8",
+    image: "/src/assets/portfolio/blogSanggar.png",
   },
 ];
 
@@ -163,6 +157,7 @@ const BLOGS = [
     readTime: "11 menit",
     tag: "Github Copilot",
     url: "https://copilot.github.com",
+    image: "https://img.icons8.com/fluent/1200/github-copilot.jpg",
   },
   {
     id: 2,
@@ -173,6 +168,8 @@ const BLOGS = [
     readTime: "11 menit",
     tag: "DaisyUI",
     url: "https://daisyui.com",
+    image:
+      "https://raw.githubusercontent.com/saadeghi/daisyui-images/master/images/daisyui-logo/favicon-192.png",
   },
   {
     id: 3,
@@ -184,6 +181,8 @@ const BLOGS = [
     readTime: "9 menit",
     tag: "Figma",
     url: "https://www.figma.com",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9IQCea8hSpiYjBajC-OQu3h1fXr4qesFAog&s",
   },
   {
     id: 4,
@@ -194,6 +193,7 @@ const BLOGS = [
     readTime: "14 menit",
     tag: "Vue",
     url: "https://vuejs.org",
+    image: "https://vuejs.org/images/logo.png",
   },
   {
     id: 5,
@@ -204,6 +204,8 @@ const BLOGS = [
     readTime: "10 menit",
     tag: "Git",
     url: "https://git-scm.com",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Git_icon.svg/3840px-Git_icon.svg.png",
   },
   {
     id: 6,
@@ -214,6 +216,8 @@ const BLOGS = [
     readTime: "9 menit",
     tag: "CSS",
     url: "https://tailwindcss.com",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/3840px-Tailwind_CSS_Logo.svg.png",
   },
   {
     id: 7,
@@ -224,6 +228,8 @@ const BLOGS = [
     readTime: "10 menit",
     tag: "Next",
     url: "https://nextjs.org",
+    image:
+      "https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_light_background.png",
   },
   {
     id: 8,
@@ -234,6 +240,7 @@ const BLOGS = [
     readTime: "8 menit",
     tag: "React",
     url: "https://react.dev",
+    image: "https://react.dev/images/og-home.png",
   },
 ];
 
@@ -283,7 +290,6 @@ const EXPERIENCES = [
 
 const WA_NUMBER = "6285368750970";
 
-// ===== THEME =====
 const t = (dark) => ({
   bg: dark ? "#0f0f0f" : "#ffffff",
   bgAlt: dark ? "#111827" : "#f0f9ff",
@@ -295,7 +301,6 @@ const t = (dark) => ({
   shadow: dark ? "#1e3a8a" : "#93c5fd",
 });
 
-// ===== PRIMITIVES =====
 function SectionLabel({ label }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -367,7 +372,6 @@ function PrimaryBtn({ children, onClick }) {
     </button>
   );
 }
-
 function OutlineBtn({ children, onClick, dark }) {
   return (
     <button
@@ -391,7 +395,6 @@ function OutlineBtn({ children, onClick, dark }) {
     </button>
   );
 }
-
 function SmallBtn({ children, onClick }) {
   return (
     <button
@@ -412,9 +415,9 @@ function SmallBtn({ children, onClick }) {
   );
 }
 
-// ===== CARDS =====
 function ProjectCard({ project, darkMode, large }) {
   const th = t(darkMode);
+  const [imgErr, setImgErr] = useState(false);
   return (
     <div
       style={{
@@ -435,17 +438,42 @@ function ProjectCard({ project, darkMode, large }) {
         e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
       }}
     >
+      {/* Image area */}
       <div
         style={{
-          height: large ? 100 : 72,
-          background: project.color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: large ? "2rem" : "1.5rem",
+          height: large ? 160 : 100,
+          overflow: "hidden",
+          background: "#1D4ED8",
+          position: "relative",
         }}
       >
-        💻
+        {!imgErr && project.image ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            onError={() => setImgErr(true)}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "#1D4ED8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: large ? "2.5rem" : "1.8rem",
+            }}
+          >
+            💻
+          </div>
+        )}
       </div>
       <div style={{ padding: large ? "16px" : "12px" }}>
         <div
@@ -501,8 +529,10 @@ function ProjectCard({ project, darkMode, large }) {
   );
 }
 
+// ===== BLOG CARD — dengan gambar dari URL =====
 function BlogCard({ blog, darkMode }) {
   const th = t(darkMode);
+  const [imgErr, setImgErr] = useState(false);
   return (
     <a
       href={blog.url}
@@ -512,13 +542,13 @@ function BlogCard({ blog, darkMode }) {
         background: th.bgCard,
         border: `2px solid ${th.border}`,
         boxShadow: `5px 5px 0 ${th.shadow}`,
-        padding: "16px",
         cursor: "pointer",
         transition: "transform 0.12s, box-shadow 0.12s",
         display: "flex",
         flexDirection: "column",
         textDecoration: "none",
         height: "100%",
+        overflow: "hidden",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translate(-3px,-3px)";
@@ -529,62 +559,466 @@ function BlogCard({ blog, darkMode }) {
         e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
       }}
     >
-      <span
+      {/* Image area */}
+      <div
         style={{
-          background: "#dbeafe",
-          border: "1.5px solid #2563EB",
-          color: "#1D4ED8",
-          fontWeight: 700,
-          fontSize: "0.68rem",
-          padding: "2px 9px",
-          alignSelf: "flex-start",
-          marginBottom: 10,
+          height: 120,
+          overflow: "hidden",
+          background: darkMode ? "#1e3a8a" : "#dbeafe",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {blog.tag}
-      </span>
-      <h3
+        {!imgErr && blog.image ? (
+          <img
+            src={blog.image}
+            alt={blog.title}
+            onError={() => setImgErr(true)}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        ) : (
+          <span style={{ fontSize: "2rem" }}>📝</span>
+        )}
+      </div>
+      <div
         style={{
-          fontWeight: 800,
-          fontSize: "0.9rem",
-          color: th.text,
-          margin: "0 0 8px",
-          lineHeight: 1.4,
+          padding: "14px",
+          display: "flex",
+          flexDirection: "column",
           flex: 1,
         }}
       >
-        {blog.title}
-      </h3>
-      <p
-        style={{
-          color: th.muted,
-          fontSize: "0.8rem",
-          lineHeight: 1.6,
-          margin: "0 0 10px",
-        }}
-      >
-        {blog.excerpt.slice(0, 80)}…
-      </p>
-      <p style={{ color: th.muted, fontSize: "0.7rem", margin: "0 0 10px" }}>
-        {blog.date} · {blog.readTime}
-      </p>
-      <span
-        style={{
-          color: "#2563EB",
-          fontWeight: 700,
-          fontSize: "0.78rem",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 4,
-        }}
-      >
-        Baca Selengkapnya →
-      </span>
+        <span
+          style={{
+            background: "#dbeafe",
+            border: "1.5px solid #2563EB",
+            color: "#1D4ED8",
+            fontWeight: 700,
+            fontSize: "0.68rem",
+            padding: "2px 9px",
+            alignSelf: "flex-start",
+            marginBottom: 8,
+          }}
+        >
+          {blog.tag}
+        </span>
+        <h3
+          style={{
+            fontWeight: 800,
+            fontSize: "0.88rem",
+            color: th.text,
+            margin: "0 0 6px",
+            lineHeight: 1.4,
+            flex: 1,
+          }}
+        >
+          {blog.title}
+        </h3>
+        <p
+          style={{
+            color: th.muted,
+            fontSize: "0.78rem",
+            lineHeight: 1.6,
+            margin: "0 0 8px",
+          }}
+        >
+          {blog.excerpt.slice(0, 70)}…
+        </p>
+        <p style={{ color: th.muted, fontSize: "0.68rem", margin: "0 0 8px" }}>
+          {blog.date} · {blog.readTime}
+        </p>
+        <span
+          style={{
+            color: "#2563EB",
+            fontWeight: 700,
+            fontSize: "0.75rem",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          Baca Selengkapnya →
+        </span>
+      </div>
     </a>
   );
 }
 
-// ===== CONTACT CTA =====
+function AIChatbot({ darkMode }) {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content:
+        "Halo! 👋 Saya asisten AI Restu. Tanya apa saja tentang Restu, proyeknya, skill, atau cara menghubunginya ya!",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef(null);
+  const th = t(darkMode);
+
+  useEffect(() => {
+    if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, open]);
+
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
+    const newMessages = [...messages, { role: "user", content: text }];
+    setMessages(newMessages);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: `Kamu adalah asisten AI personal milik Restu Anggia Putra, seorang Software Developer dari Tulang Bawang, Lampung, Indonesia.
+
+Informasi tentang Restu:
+- Nama: Restu Anggia Putra
+- Profesi: Software Developer & Tech Enthusiast  
+- Lokasi: Tulang Bawang, Lampung, Indonesia
+- Email: restuanggia10@gmail.com
+- WhatsApp: +62 853-6875-0970
+- GitHub: https://github.com/restuanggia-del
+- LinkedIn: https://www.linkedin.com/in/restu-anggia-putra-35021728b/
+- Instagram: https://www.instagram.com/rstanggieee/
+
+Skill: HTML & CSS (95%), JavaScript (88%), React.js (85%), TailwindCSS (90%), Node.js (75%), Git & GitHub (85%)
+
+Proyek:
+1. EduScan (2026) - Sistem Absensi berbasis QR Code & WhatsApp. Stack: React, Vite, Supabase
+2. Arroyyan99 (2026) - Aplikasi POS untuk perusahaan AMDK. Stack: React, Vite, Supabase
+3. Sanggar Alam (2025) - Website promosi jasa seni ukir. Stack: Next.js, TailwindCSS
+4. Desa Srimulya Jaya (2025) - Website desa informasi publik. Stack: Astro, TailwindCSS
+5. Tarowehh (2023) - Website promosi keripik talas. Stack: Vue.js, JSON Server
+6. Blog Sanggar Alam (2022) - Blog statis seni. Stack: HTML, CSS, JS
+
+Pengalaman:
+- Doctoral Assistant di Arroyyan99 (Jan 2026–sekarang)
+- Web Developer & Tutor di Profesional Private (Jan–Mar 2024)
+- Network Technician Intern di Techno Cell & Service (Jan–Mar 2021)
+
+Kepribadian chatbot: ramah, santai, helpful, pakai bahasa Indonesia, sesekali pakai emoji. Jawab pertanyaan seputar Restu, proyeknya, cara kolaborasi, skill, dan hal teknis seputar web development. Jika ditanya hal di luar konteks, tetap jawab dengan helpful.`,
+          messages: newMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      });
+      const data = await res.json();
+      const reply =
+        data.content?.[0]?.text ||
+        "Maaf, saya tidak bisa menjawab saat ini. Coba lagi ya!";
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Waduh, ada gangguan koneksi nih. Coba lagi sebentar ya! 😅",
+        },
+      ]);
+    }
+    setLoading(false);
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  return (
+    <>
+      {/* Floating button */}
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          zIndex: 2000,
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #2563EB, #7c3aed)",
+          border: "3px solid #0a0a0a",
+          boxShadow: "4px 4px 0 #0a0a0a",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "1.4rem",
+          transition: "all 0.2s",
+        }}
+        title="Chat dengan AI Restu"
+      >
+        {open ? "✕" : "🤖"}
+      </button>
+
+      {/* Chat window */}
+      {open && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 92,
+            right: 24,
+            zIndex: 1999,
+            width: 340,
+            maxWidth: "calc(100vw - 48px)",
+            background: th.bg,
+            border: "3px solid #2563EB",
+            boxShadow: "6px 6px 0 #1D4ED8",
+            display: "flex",
+            flexDirection: "column",
+            borderRadius: 0,
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              background: "linear-gradient(135deg, #2563EB, #7c3aed)",
+              padding: "12px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.2)",
+                border: "2px solid rgba(255,255,255,0.5)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.1rem",
+                flexShrink: 0,
+              }}
+            >
+              🤖
+            </div>
+            <div>
+              <p
+                style={{
+                  fontWeight: 800,
+                  color: "#fff",
+                  margin: 0,
+                  fontSize: "0.9rem",
+                }}
+              >
+                AI Asisten Restu
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "#22c55e",
+                    animation: "pulse 2s infinite",
+                    display: "inline-block",
+                  }}
+                />
+                <span
+                  style={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: "0.72rem",
+                  }}
+                >
+                  Online
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Messages */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              maxHeight: 320,
+              minHeight: 200,
+            }}
+          >
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  justifyContent:
+                    msg.role === "user" ? "flex-end" : "flex-start",
+                  gap: 8,
+                }}
+              >
+                {msg.role === "assistant" && (
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg,#2563EB,#7c3aed)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.8rem",
+                      flexShrink: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    🤖
+                  </div>
+                )}
+                <div
+                  style={{
+                    maxWidth: "78%",
+                    padding: "8px 12px",
+                    background:
+                      msg.role === "user"
+                        ? "#2563EB"
+                        : darkMode
+                          ? "#1e293b"
+                          : "#f1f5f9",
+                    color: msg.role === "user" ? "#fff" : th.text,
+                    fontSize: "0.82rem",
+                    lineHeight: 1.6,
+                    borderRadius: 0,
+                    border:
+                      msg.role === "user" ? "none" : `1.5px solid ${th.border}`,
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  gap: 8,
+                }}
+              >
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg,#2563EB,#7c3aed)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.8rem",
+                  }}
+                >
+                  🤖
+                </div>
+                <div
+                  style={{
+                    padding: "8px 14px",
+                    background: darkMode ? "#1e293b" : "#f1f5f9",
+                    border: `1.5px solid ${th.border}`,
+                    display: "flex",
+                    gap: 4,
+                    alignItems: "center",
+                  }}
+                >
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: "#2563EB",
+                        animation: `pulse 1.2s ease ${i * 0.2}s infinite`,
+                        display: "inline-block",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          {/* Input */}
+          <div
+            style={{
+              padding: "10px 12px",
+              borderTop: `2px solid ${th.border}`,
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              placeholder="Tanya sesuatu tentang Restu..."
+              rows={1}
+              style={{
+                flex: 1,
+                padding: "8px 10px",
+                background: th.bgInput,
+                border: `2px solid ${th.border}`,
+                color: th.text,
+                fontSize: "0.82rem",
+                outline: "none",
+                resize: "none",
+                fontFamily: "inherit",
+                lineHeight: 1.5,
+              }}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={loading || !input.trim()}
+              style={{
+                width: 38,
+                height: 38,
+                background: loading || !input.trim() ? "#94a3b8" : "#2563EB",
+                border: "2px solid #0a0a0a",
+                boxShadow:
+                  loading || !input.trim() ? "none" : "3px 3px 0 #0a0a0a",
+                color: "#fff",
+                cursor: loading || !input.trim() ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1rem",
+                flexShrink: 0,
+              }}
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function ContactCTA({ darkMode, setActivePage }) {
   const { isMobile } = useBreakpoint();
   return (
@@ -665,7 +1099,6 @@ function ContactCTA({ darkMode, setActivePage }) {
   );
 }
 
-// ===== NAVBAR =====
 function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -728,7 +1161,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
             RAP
           </span>
         </button>
-
         {!isSmall && (
           <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
             {NAV_LINKS.map((link) => (
@@ -777,7 +1209,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
             </button>
           </div>
         )}
-
         {isSmall && (
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -837,7 +1268,6 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
           </div>
         )}
       </div>
-
       {isSmall && menuOpen && (
         <div
           style={{
@@ -882,10 +1312,10 @@ function Navbar({ activePage, setActivePage, darkMode, setDarkMode }) {
   );
 }
 
-// ===== FOOTER =====
 function Footer({ darkMode, setActivePage }) {
   const { isMobile, isTablet } = useBreakpoint();
   const muted = "#94a3b8";
+  // Mobile: 1 kolom center, Tablet: 2 kolom, Desktop: 3 kolom
   const cols = isMobile ? "1fr" : isTablet ? "1fr 1fr" : "2fr 1fr 1fr";
 
   return (
@@ -905,14 +1335,8 @@ function Footer({ darkMode, setActivePage }) {
             marginBottom: "2.5rem",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
+          {/* Brand */}
+          <div style={{ textAlign: isMobile ? "center" : "left" }}>
             <div
               style={{
                 fontWeight: 900,
@@ -920,9 +1344,9 @@ function Footer({ darkMode, setActivePage }) {
                 color: "#fff",
                 marginBottom: 12,
                 display: "flex",
-                justifyContent: "center",
                 alignItems: "center",
                 gap: 10,
+                justifyContent: isMobile ? "center" : "flex-start",
               }}
             >
               <span
@@ -937,27 +1361,24 @@ function Footer({ darkMode, setActivePage }) {
                 RAP
               </span>
             </div>
-
             <p
               style={{
                 color: muted,
                 lineHeight: 1.7,
                 maxWidth: 280,
                 fontSize: "0.88rem",
-                margin: "0 0 1.25rem",
-                textAlign: "center",
+                margin: isMobile ? "0 auto 1.25rem" : "0 0 1.25rem",
               }}
             >
               Software Developer yang selalu bersemangat membangun solusi
               teknologi yang inovatif.
             </p>
-
             <div
               style={{
                 display: "flex",
                 gap: 8,
                 flexWrap: "wrap",
-                justifyContent: "center",
+                justifyContent: isMobile ? "center" : "flex-start",
               }}
             >
               {SOCIALS.map((s) => (
@@ -998,7 +1419,8 @@ function Footer({ darkMode, setActivePage }) {
             </div>
           </div>
 
-          <div>
+          {/* Navigasi */}
+          <div style={{ textAlign: isMobile ? "center" : "left" }}>
             <p
               style={{
                 fontWeight: 700,
@@ -1011,7 +1433,14 @@ function Footer({ darkMode, setActivePage }) {
             >
               Navigasi
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                alignItems: isMobile ? "center" : "flex-start",
+              }}
+            >
               {NAV_LINKS.map((link) => (
                 <button
                   key={link.id}
@@ -1021,13 +1450,10 @@ function Footer({ darkMode, setActivePage }) {
                     border: "none",
                     color: muted,
                     cursor: "pointer",
-                    textAlign: "left",
+                    textAlign: isMobile ? "center" : "left",
                     fontSize: "0.88rem",
                     padding: 0,
                     transition: "color 0.15s",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.color = "#2563EB")
@@ -1040,7 +1466,8 @@ function Footer({ darkMode, setActivePage }) {
             </div>
           </div>
 
-          <div>
+          {/* Kontak */}
+          <div style={{ textAlign: isMobile ? "center" : "left" }}>
             <p
               style={{
                 fontWeight: 700,
@@ -1053,7 +1480,14 @@ function Footer({ darkMode, setActivePage }) {
             >
               Kontak
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                alignItems: isMobile ? "center" : "flex-start",
+              }}
+            >
               {[
                 "restuanggia10@gmail.com",
                 "Tulang Bawang, Lampung, Indonesia",
@@ -1077,8 +1511,9 @@ function Footer({ darkMode, setActivePage }) {
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
             justifyContent: "space-between",
-            alignItems: isMobile ? "flex-start" : "center",
+            alignItems: isMobile ? "center" : "center",
             gap: 8,
+            textAlign: isMobile ? "center" : "left",
           }}
         >
           <p style={{ color: "#475569", fontSize: "0.8rem", margin: 0 }}>
@@ -1094,7 +1529,6 @@ function Footer({ darkMode, setActivePage }) {
   );
 }
 
-// ===== HOME PAGE =====
 function HomePage({ darkMode, setActivePage }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
@@ -1104,7 +1538,6 @@ function HomePage({ darkMode, setActivePage }) {
     : isTablet
       ? "1fr 1fr"
       : "repeat(4, 1fr)";
-
   const typedText = useTyping(
     [
       "Software Developer 🚀",
@@ -1132,14 +1565,13 @@ function HomePage({ darkMode, setActivePage }) {
           position: "relative",
         }}
       >
-        {/* GIF — absolute di desktop/tablet, hidden di mobile (muncul inline di bawah) */}
         {!isMobile && (
           <img
             src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I2aXVpOGd3eHoxY3oxZTczOWF6anhqNDh1eHB5NDd4eXk3OHR5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vcdbi5o470i9FACaZO/giphy.gif"
             alt="coding gif"
             style={{
               position: "absolute",
-              top: isTablet ? 100 : 100,
+              top: 100,
               right: isTablet ? 35 : 70,
               width: isTablet ? 140 : 220,
               height: isTablet ? 90 : 180,
@@ -1151,7 +1583,6 @@ function HomePage({ darkMode, setActivePage }) {
             }}
           />
         )}
-
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ animation: "fadeInDown 0.6s ease 0.1s both" }}>
             <div
@@ -1186,8 +1617,6 @@ function HomePage({ darkMode, setActivePage }) {
               </span>
             </div>
           </div>
-
-          {/* GIF khusus mobile — muncul di bawah badge */}
           {isMobile && (
             <div
               style={{
@@ -1195,24 +1624,21 @@ function HomePage({ darkMode, setActivePage }) {
                 marginBottom: 20,
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
               }}
             >
               <img
                 src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I2aXVpOGd3eHoxY3oxZTczOWF6anhqNDh1eHB5NDd4eXk3OHR5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vcdbi5o470i9FACaZO/giphy.gif"
                 alt="coding gif"
                 style={{
-                  width: isMobile ? 180 : 240,
+                  width: 180,
                   height: "auto",
                   border: "3px solid #0a0a0a",
                   boxShadow: `5px 5px 0 ${th.shadow}`,
                   objectFit: "contain",
-                  borderRadius: 0,
                 }}
               />
             </div>
           )}
-
           <div style={{ animation: "fadeInUp 0.7s ease 0.25s both" }}>
             <h1
               style={{
@@ -1251,7 +1677,6 @@ function HomePage({ darkMode, setActivePage }) {
               </span>
             </h1>
           </div>
-
           <div style={{ animation: "fadeInUp 0.7s ease 0.4s both" }}>
             <p
               style={{
@@ -1268,7 +1693,6 @@ function HomePage({ darkMode, setActivePage }) {
               personal.
             </p>
           </div>
-
           <div
             style={{
               animation: "fadeInUp 0.7s ease 0.55s both",
@@ -1284,13 +1708,10 @@ function HomePage({ darkMode, setActivePage }) {
               Hubungi Saya
             </OutlineBtn>
           </div>
-
           <div
             style={{
               animation: "fadeInUp 0.7s ease 0.7s both",
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
               gap: isMobile ? 20 : 36,
               marginTop: 44,
               paddingTop: 32,
@@ -1574,7 +1995,6 @@ function TentangPage({ darkMode }) {
         <Reveal>
           <SectionLabel label="Tentang Saya" />
         </Reveal>
-
         <Reveal delay={100}>
           <div
             style={{
@@ -1640,7 +2060,6 @@ function TentangPage({ darkMode }) {
             </div>
           </div>
         </Reveal>
-
         <Reveal delay={120}>
           <div
             style={{
@@ -1672,9 +2091,7 @@ function TentangPage({ darkMode }) {
               Perjalanan saya di dunia teknologi dimulai dari rasa penasaran
               tentang bagaimana perkembangan Teknologi dapat mengubah cara
               manusia bekerja, belajar, dan berinteraksi. Rasa ingin tahu
-              tersebut mendorong saya untuk mempelajari semuanya dari dasar,
-              mulai dari fundamental programming, berbagai bahasa pemrograman,
-              desain antarmuka, hingga teknologi modern.
+              tersebut mendorong saya untuk mempelajari semuanya dari dasar.
             </p>
             <p
               style={{
@@ -1690,7 +2107,6 @@ function TentangPage({ darkMode }) {
             </p>
           </div>
         </Reveal>
-
         <Reveal delay={80}>
           <h2
             style={{
@@ -1764,7 +2180,6 @@ function TentangPage({ darkMode }) {
             </Reveal>
           ))}
         </div>
-
         <Reveal delay={80}>
           <h2
             style={{
@@ -1844,7 +2259,6 @@ function TentangPage({ darkMode }) {
   );
 }
 
-// ===== PORTFOLIO PAGE =====
 function PortfolioPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
@@ -1855,7 +2269,7 @@ function PortfolioPage({ darkMode }) {
       ? PROJECTS
       : PROJECTS.filter((p) => p.tags.includes(filter));
   const cols = isMobile
-    ? "1fr 1fr"
+    ? "repeat(1, 1fr)"
     : isTablet
       ? "repeat(2, 1fr)"
       : "repeat(3, 1fr)";
@@ -1890,7 +2304,6 @@ function PortfolioPage({ darkMode }) {
             Kumpulan proyek nyata dari berbagai tugas yang telah dibantu.
           </p>
         </Reveal>
-
         <Reveal delay={140}>
           <div
             style={{
@@ -1921,7 +2334,6 @@ function PortfolioPage({ darkMode }) {
             ))}
           </div>
         </Reveal>
-
         <div style={{ display: "grid", gridTemplateColumns: cols, gap: 18 }}>
           {filtered.map((p) => (
             <ProjectCard key={p.id} project={p} darkMode={darkMode} large />
@@ -1932,7 +2344,6 @@ function PortfolioPage({ darkMode }) {
   );
 }
 
-// ===== BLOG PAGE =====
 function BlogPage({ darkMode }) {
   const { isMobile } = useBreakpoint();
   const th = t(darkMode);
@@ -1968,7 +2379,6 @@ function BlogPage({ darkMode }) {
             teknologi.
           </p>
         </Reveal>
-
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {BLOGS.map((b, i) => (
             <Reveal key={b.id} delay={i * 80}>
@@ -1980,11 +2390,12 @@ function BlogPage({ darkMode }) {
                   background: th.bgCard,
                   border: `2px solid ${th.border}`,
                   boxShadow: `5px 5px 0 ${th.shadow}`,
-                  padding: isMobile ? "18px" : "26px 30px",
                   cursor: "pointer",
                   transition: "transform 0.1s, box-shadow 0.1s",
                   textDecoration: "none",
-                  display: "block",
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  overflow: "hidden",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translate(-2px,-2px)";
@@ -1995,66 +2406,100 @@ function BlogPage({ darkMode }) {
                   e.currentTarget.style.boxShadow = `5px 5px 0 ${th.shadow}`;
                 }}
               >
+                {/* Thumbnail */}
                 <div
                   style={{
+                    width: isMobile ? "100%" : 160,
+                    height: isMobile ? 140 : "auto",
+                    flexShrink: 0,
+                    background: darkMode ? "#1e3a8a" : "#dbeafe",
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    marginBottom: 10,
-                    flexWrap: "wrap",
-                    gap: 8,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <span
+                  {b.image ? (
+                    <img
+                      src={b.image}
+                      alt={b.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: "2rem" }}>📝</span>
+                  )}
+                </div>
+                <div
+                  style={{ padding: isMobile ? "16px" : "20px 24px", flex: 1 }}
+                >
+                  <div
                     style={{
-                      background: "#dbeafe",
-                      border: "1.5px solid #2563EB",
-                      color: "#1D4ED8",
-                      fontWeight: 700,
-                      fontSize: "0.72rem",
-                      padding: "2px 9px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      marginBottom: 8,
+                      flexWrap: "wrap",
+                      gap: 6,
                     }}
                   >
-                    {b.tag}
-                  </span>
-                  <span style={{ color: th.muted, fontSize: "0.75rem" }}>
-                    {b.date} · {b.readTime} baca
-                  </span>
+                    <span
+                      style={{
+                        background: "#dbeafe",
+                        border: "1.5px solid #2563EB",
+                        color: "#1D4ED8",
+                        fontWeight: 700,
+                        fontSize: "0.72rem",
+                        padding: "2px 9px",
+                      }}
+                    >
+                      {b.tag}
+                    </span>
+                    <span style={{ color: th.muted, fontSize: "0.75rem" }}>
+                      {b.date} · {b.readTime} baca
+                    </span>
+                  </div>
+                  <h2
+                    style={{
+                      fontWeight: 800,
+                      fontSize: isMobile ? "0.98rem" : "1.05rem",
+                      color: th.text,
+                      margin: "0 0 8px",
+                      letterSpacing: "-0.3px",
+                    }}
+                  >
+                    {b.title}
+                  </h2>
+                  <p
+                    style={{
+                      color: th.muted,
+                      lineHeight: 1.7,
+                      margin: 0,
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    {b.excerpt}
+                  </p>
+                  <p
+                    style={{
+                      color: "#2563EB",
+                      fontWeight: 700,
+                      fontSize: "0.85rem",
+                      margin: "10px 0 0",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    Baca Selengkapnya →
+                  </p>
                 </div>
-                <h2
-                  style={{
-                    fontWeight: 800,
-                    fontSize: isMobile ? "0.98rem" : "1.1rem",
-                    color: th.text,
-                    margin: "0 0 8px",
-                    letterSpacing: "-0.3px",
-                  }}
-                >
-                  {b.title}
-                </h2>
-                <p
-                  style={{
-                    color: th.muted,
-                    lineHeight: 1.7,
-                    margin: 0,
-                    fontSize: "0.88rem",
-                  }}
-                >
-                  {b.excerpt}
-                </p>
-                <p
-                  style={{
-                    color: "#2563EB",
-                    fontWeight: 700,
-                    fontSize: "0.85rem",
-                    margin: "12px 0 0",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                >
-                  Baca Selengkapnya →
-                </p>
               </a>
             </Reveal>
           ))}
@@ -2064,7 +2509,6 @@ function BlogPage({ darkMode }) {
   );
 }
 
-// ===== KONTAK PAGE =====
 function KontakPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
@@ -2082,7 +2526,6 @@ function KontakPage({ darkMode }) {
 
   const set = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
-
   const validate = () => {
     const errs = {};
     if (!form.nama.trim()) errs.nama = "Nama wajib diisi";
@@ -2093,7 +2536,6 @@ function KontakPage({ darkMode }) {
     if (!form.pesan.trim()) errs.pesan = "Pesan wajib diisi";
     return errs;
   };
-
   const handleSend = () => {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -2120,7 +2562,6 @@ function KontakPage({ darkMode }) {
     );
     setSent(true);
   };
-
   const inputSt = (field) => ({
     width: "100%",
     padding: "10px 13px",
@@ -2173,6 +2614,7 @@ function KontakPage({ darkMode }) {
         >
           <Reveal delay={160}>
             <div>
+              {/* Info cards — rata kiri */}
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 10 }}
               >
@@ -2209,8 +2651,10 @@ function KontakPage({ darkMode }) {
                       alignItems: "center",
                     }}
                   >
-                    <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
-                    <div>
+                    <span style={{ fontSize: "1.2rem", flexShrink: 0 }}>
+                      {item.icon}
+                    </span>
+                    <div style={{ textAlign: "left" }}>
                       <p
                         style={{
                           color: th.muted,
@@ -2237,7 +2681,6 @@ function KontakPage({ darkMode }) {
                   </div>
                 ))}
               </div>
-
               <a
                 href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo Restu! 👋 Saya ingin ngobrol sebentar. Ada yang bisa kamu bantu? 😊")}`}
                 target="_blank"
@@ -2260,7 +2703,6 @@ function KontakPage({ darkMode }) {
               >
                 💬 Chat via WhatsApp
               </a>
-
               <div
                 style={{
                   display: "flex",
@@ -2379,7 +2821,6 @@ function KontakPage({ darkMode }) {
                       saya 📱
                     </p>
                   </div>
-
                   {[
                     {
                       key: "nama",
@@ -2440,7 +2881,6 @@ function KontakPage({ darkMode }) {
                       )}
                     </div>
                   ))}
-
                   <div>
                     <label
                       style={{
@@ -2478,7 +2918,6 @@ function KontakPage({ darkMode }) {
                       </p>
                     )}
                   </div>
-
                   {(form.nama || form.pesan) && (
                     <div
                       style={{
@@ -2505,12 +2944,9 @@ function KontakPage({ darkMode }) {
                           whiteSpace: "pre-wrap",
                           wordBreak: "break-word",
                         }}
-                      >
-                        {`Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.\n\n*Nama:* ${form.nama || "…"}\n*Email:* ${form.email || "…"}\n*Subjek:* ${form.subjek || "…"}\n\n*Pesan:*\n${form.pesan || "…"}`}
-                      </p>
+                      >{`Halo Restu! 👋 Saya menghubungi melalui website portfolio kamu.\n\n*Nama:* ${form.nama || "…"}\n*Email:* ${form.email || "…"}\n*Subjek:* ${form.subjek || "…"}\n\n*Pesan:*\n${form.pesan || "…"}`}</p>
                     </div>
                   )}
-
                   <button
                     onClick={handleSend}
                     onMouseDown={pressDown}
@@ -2553,11 +2989,9 @@ function KontakPage({ darkMode }) {
   );
 }
 
-// ===== APP ROOT =====
 export default function App() {
   const [activePage, setActivePage] = useState("beranda");
   const [darkMode, setDarkMode] = useState(false);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [activePage]);
@@ -2601,6 +3035,7 @@ export default function App() {
       />
       <main style={{ minHeight: "100vh" }}>{renderPage()}</main>
       <Footer darkMode={darkMode} setActivePage={setActivePage} />
+      <AIChatbot darkMode={darkMode} />
     </>
   );
 }
