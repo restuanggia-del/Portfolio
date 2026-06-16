@@ -1052,7 +1052,15 @@ function ContactCTA({ darkMode, setActivePage }) {
           Anda.
         </p>
       </div>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
         <a
           href={`https://wa.me/${WA_NUMBER}`}
           target="_blank"
