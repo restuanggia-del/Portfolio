@@ -139,7 +139,7 @@ const PROJECTS = [
   {
     id: 6,
     title: "Blog Sanggar Alam",
-    desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam.",
+    desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam. Dibangun dengan HTML, CSS, dan JavaScript untuk memberikan pengalaman membaca yang menarik dan responsif.",
     tags: ["HTML", "CSS", "JavaScript"],
     year: "2022",
     image: "/portfolio/blogSanggar.png",
@@ -1699,6 +1699,8 @@ function HomePage({ darkMode, setActivePage }) {
               display: "flex",
               gap: 12,
               flexWrap: "wrap",
+              justifyContent: isMobile ? "center" : "flex-start",
+              alignItems: "center",
             }}
           >
             <PrimaryBtn onClick={() => setActivePage("portfolio")}>
@@ -1712,6 +1714,8 @@ function HomePage({ darkMode, setActivePage }) {
             style={{
               animation: "fadeInUp 0.7s ease 0.7s both",
               display: "flex",
+              justifyContent: isMobile ? "center" : "flex-start",
+              alignItems: "center",
               gap: isMobile ? 20 : 36,
               marginTop: 44,
               paddingTop: 32,
@@ -2706,6 +2710,8 @@ function KontakPage({ darkMode }) {
               <div
                 style={{
                   display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   gap: 8,
                   marginTop: 14,
                   flexWrap: "wrap",
