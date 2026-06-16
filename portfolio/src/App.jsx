@@ -102,7 +102,7 @@ const PROJECTS = [
     desc: "Sistem Absensi Sekolah Berbasis QR Code dan Notifikasi WhatsApp Real-Time. Memudahkan proses absensi dengan pemindaian QR Code dan memberikan notifikasi otomatis kepada orang tua melalui WhatsApp.",
     tags: ["React", "Vite", "Supabase"],
     year: "2026",
-    image: "/src/assets/portfolio/eduscan.png",
+    image: "/portfolio/eduscan.png",
   },
   {
     id: 2,
@@ -110,7 +110,7 @@ const PROJECTS = [
     desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99. Fitur utama meliputi manajemen produk, pencatatan penjualan, dan laporan keuangan yang terintegrasi.",
     tags: ["React", "Vite", "Supabase"],
     year: "2026",
-    image: "/src/assets/portfolio/arroyyan.png",
+    image: "/portfolio/arroyyan.png",
   },
   {
     id: 3,
@@ -118,7 +118,7 @@ const PROJECTS = [
     desc: "Aplikasi berbasis website guna sebagai media promosi dan informasi tentang jasa pembuatan karya seni ukir, pembuatan patung, pembuatan relief, dan taman kolam.",
     tags: ["Next.js", "TailwindCSS", "API"],
     year: "2025",
-    image: "/src/assets/portfolio/webSanggar.png",
+    image: "/portfolio/webSanggar.png",
   },
   {
     id: 4,
@@ -126,7 +126,7 @@ const PROJECTS = [
     desc: "Website Desa Srimulya Jaya yang memberikan informasi lengkap tentang desa, termasuk profil, berita, layanan publik, dan kontak penting untuk warga dan pengunjung.",
     tags: ["Astro", "TailwindCSS", "Vite"],
     year: "2025",
-    image: "/src/assets/portfolio/desa.png",
+    image: "/portfolio/desa.png",
   },
   {
     id: 5,
@@ -134,7 +134,7 @@ const PROJECTS = [
     desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
     tags: ["Vue.js", "JSON Server", "TailwindCSS"],
     year: "2023",
-    image: "/src/assets/portfolio/tarowehh.png",
+    image: "/portfolio/tarowehh.png",
   },
   {
     id: 6,
@@ -142,7 +142,7 @@ const PROJECTS = [
     desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam.",
     tags: ["HTML", "CSS", "JavaScript"],
     year: "2022",
-    image: "/src/assets/portfolio/blogSanggar.png",
+    image: "/portfolio/blogSanggar.png",
   },
 ];
 
