@@ -98,6 +98,38 @@ const NAV_LINKS = [
 const PROJECTS = [
   {
     id: 1,
+    title: "Solusi AC Central",
+    desc: "Website resmi Solusi AC Central yang menampilkan informasi tentang perusahaan, layanan, dan kontak. Memudahkan pengunjung untuk mendapatkan informasi yang dibutuhkan secara cepat dan efisien.",
+    tags: ["React", "Vite", "Typescript"],
+    year: "2026",
+    image: "/portfolio/ac.png",
+  },
+  {
+    id: 2,
+    title: "Solusi AC Central Admin Panel",
+    desc: "Admin Panel Solusi AC Central untuk mengelola data, konten, dan pengaturan sistem. Memudahkan admin dalam mengelola informasi dan fitur sistem secara efisien.",
+    tags: ["MongoDB", "Express.js", "React", "Node.js"],
+    year: "2026",
+    image: "/portfolio/adminAc.png",
+  },
+  {
+    id: 3,
+    title: "Arroyyan Website",
+    desc: "Website resmi Arroyyan yang menampilkan informasi tentang perusahaan, layanan, dan kontak. Memudahkan pengunjung untuk mendapatkan informasi yang dibutuhkan secara cepat dan efisien.",
+    tags: ["React", "Vite", "JavaScript"],
+    year: "2026",
+    image: "/portfolio/arroyyanWeb.png",
+  },
+  {
+    id: 4,
+    title: "Arroyyan Website Admin Panel",
+    desc: "Admin Panel Arroyyan Website untuk mengelola konten, data, dan pengaturan website Arroyyan. Memudahkan admin dalam mengelola informasi dan fitur website secara efisien.",
+    tags: ["MongoDB", "Express.js", "React", "Node.js"],
+    year: "2026",
+    image: "/portfolio/arroyyanWebAdmin.png",
+  },
+  {
+    id: 5,
     title: "EduScan",
     desc: "Sistem Absensi Sekolah Berbasis QR Code dan Notifikasi WhatsApp Real-Time. Memudahkan proses absensi dengan pemindaian QR Code dan memberikan notifikasi otomatis kepada orang tua melalui WhatsApp.",
     tags: ["React", "Vite", "Supabase"],
@@ -105,7 +137,7 @@ const PROJECTS = [
     image: "/portfolio/eduscan.png",
   },
   {
-    id: 2,
+    id: 6,
     title: "Arroyyan99",
     desc: "Aplikasi Point Of Sale (POS) berbasis website untuk manajemen perusahaan AMDK (Air Minum Dalam Kemasan) Arroyyan 99. Fitur utama meliputi manajemen produk, pencatatan penjualan, dan laporan keuangan yang terintegrasi.",
     tags: ["React", "Vite", "Supabase"],
@@ -113,7 +145,7 @@ const PROJECTS = [
     image: "/portfolio/arroyyan.png",
   },
   {
-    id: 3,
+    id: 7,
     title: "Sanggar Alam",
     desc: "Aplikasi berbasis website guna sebagai media promosi dan informasi tentang jasa pembuatan karya seni ukir, pembuatan patung, pembuatan relief, dan taman kolam.",
     tags: ["Next.js", "TailwindCSS", "API"],
@@ -121,7 +153,7 @@ const PROJECTS = [
     image: "/portfolio/webSanggar.png",
   },
   {
-    id: 4,
+    id: 8,
     title: "Desa Srimulya Jaya",
     desc: "Website Desa Srimulya Jaya yang memberikan informasi lengkap tentang desa, termasuk profil, berita, layanan publik, dan kontak penting untuk warga dan pengunjung.",
     tags: ["Astro", "TailwindCSS", "Vite"],
@@ -129,7 +161,7 @@ const PROJECTS = [
     image: "/portfolio/desa.png",
   },
   {
-    id: 5,
+    id: 9,
     title: "Tarowehh",
     desc: "Aplikasi berbasis website guna untuk membantu tugas dan sebagai media promosi penjualan keripik talas.",
     tags: ["Vue.js", "JSON Server", "TailwindCSS"],
@@ -137,7 +169,7 @@ const PROJECTS = [
     image: "/portfolio/tarowehh.png",
   },
   {
-    id: 6,
+    id: 10,
     title: "Blog Sanggar Alam",
     desc: "Website statis untuk blog Sanggar Alam yang menampilkan artikel-artikel terkait seni ukir, patung, relief, dan taman kolam. Dibangun dengan HTML, CSS, dan JavaScript untuk memberikan pengalaman membaca yang menarik dan responsif.",
     tags: ["HTML", "CSS", "JavaScript"],
@@ -2275,7 +2307,19 @@ function PortfolioPage({ darkMode }) {
   const { isMobile, isTablet } = useBreakpoint();
   const th = t(darkMode);
   const [filter, setFilter] = useState("Semua");
-  const tags = ["Semua", "React", "Next.js", "Vue.js", "Astro", "HTML"];
+  const tags = [
+    "Semua",
+    "React",
+    "Next.js",
+    "Vue.js",
+    "Astro",
+    "HTML",
+    "JavaScript",
+    "Typescript",
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+  ];
   const filtered =
     filter === "Semua"
       ? PROJECTS
